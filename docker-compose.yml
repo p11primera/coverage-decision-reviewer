@@ -50,8 +50,15 @@ services:
     environment:
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET (e.g. openssl rand -hex 32)}
       AGENT_URL: http://api:8100/agent
+      # BFF audit reads (node:sqlite in route handlers) must see the SAME file the api
+      # writes. In dev both processes share the repo fs so the ../data default works;
+      # in containers each image has its own fs -> mount the named volume read-only and
+      # pin the path. ro is the contract: web never writes audit rows, only reads them.
+      AUDIT_DB_PATH: /data/reviewer.db
       NEXT_TELEMETRY_DISABLED: "1"
       COPILOTKIT_TELEMETRY_DISABLED: "true"
+    volumes:
+      - hermes-data:/data:ro
     depends_on:
       api:
         condition: service_healthy
