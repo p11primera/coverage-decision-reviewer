@@ -88,47 +88,6 @@ new id). The BFF also appends the audit row (`who/when/decision/rationale/tool_c
 from `run_input.resume` **before** dispatching (`main.py:76-87`), so the evidence is durable
 even if the resumed run later dies.
 
-## Interview talking points
-
-**Server/Client boundary.** `web/app/page.tsx` is a Server Component shell that does the
-auth check (`cookies()` + `lib/auth`) and renders only static layout; every interactive
-piece is its own `"use client"` island file in `web/components/`, each opening with a
-comment stating WHY it must be client-side and WHY the boundary sits exactly there (e.g.
-`ReviewStream` renders token deltas that exist nowhere but the live browser connection;
-`AuditDrawer` fetches over HTTP precisely because importing `lib/audit` would drag
-`node:sqlite` into the client bundle — the fetch *is* the boundary). The split keeps the
-initial paint server-rendered and confines hydration cost to the islands that mutate.
-
-**BFF rationale.** The browser has no path to FastAPI: all traffic goes to Next route
-handlers — `/api/copilotkit` (CopilotKit runtime → server-side `HttpAgent` → `:8100`),
-`/api/audit`, `/api/cancel/[threadId]`, `/api/login`, `/api/policies`. Identity is
-**never client-supplied**: `/api/login` mints an HMAC-SHA256 cookie
-(`lib/auth.ts`, httpOnly, sameSite=lax) and each route verifies it server-side, forwarding
-`X-Reviewer-Id` to the backend (`main.py:43-46` — the audit `actor` can only ever be the
-verified name; proven in `out/M1_STATUS.md`/`out/audit_api_with_cookie.json`, where forged
-and missing cookies get 401). SSE is piped unbuffered (`X-Accel-Buffering: no`) so token
-streaming survives the extra hop. `AGENT_URL`/`SESSION_SECRET` exist only in server env.
-This mirrors their production shape (.NET/FastAPI behind a BFF) — the route handlers are
-the nodejs-runtime equivalent.
-
-**Server-side history.** `@ag-ui/client` drops ACTIVITY_SNAPSHOT records, so client-held
-history is provably lossy — the server owns it instead. `backend/app/history.py` persists
-agent `ModelMessage`s in SQLite keyed by AG-UI `threadId` and every run replays them as
-`message_history` (`main.py:48,93`). The BFF strips the client-sent run messages before
-forwarding (the browser copy is for rendering only), and Retry/Resume semantics fall out of
-this: after a stream death or cancel, re-running the same `threadId` continues from the
-last **persisted** point (documented honestly in `ReviewStream.tsx:126-138` — there is no
-mid-tool-call replay; a partially executed tool is re-run from scratch by the model).
-
-**Interrupt/resume semantics (id-chain proof).** The chain
-`TOOL_CALL_START(toolCallId)` → `RUN_FINISHED interrupt id = "int-"+toolCallId` →
-`resume[].interruptId` → replayed `TOOL_CALL_RESULT(same toolCallId)` is asserted on the
-raw wire in `out/sse_verify1.txt` (line 677: `id":"int-chatcmpl-tool-a79248d7994235ff"`,
-`"toolCallId":"chatcmpl-tool-a79248d7994235ff"`) and `out/sse_verify1_resume.txt` (the
-resumed run's single `TOOL_CALL_RESULT` carries exactly that id). Approval never invents a
-second tool call, and the audit row stores `tool_call_id = interrupt_id.removeprefix("int-")`
-(`main.py:85`) so the whole decision is traceable back to the model's original call.
-
 ## CopilotKit vs assistant-ui (documented decision)
 
 CopilotKit 1.80 (v2 headless) was chosen over assistant-ui: `useAgent`/`useInterrupt` give
@@ -137,7 +96,7 @@ first-class AG-UI integration — STATE_SNAPSHOT/STATE_DELTA sync, the standard
 (`@copilotkit/runtime/v2` `CopilotRuntime` + `createCopilotRuntimeHandler`) mean zero
 adapter code between their Pydantic-AI AG-UI backend and React. assistant-ui would own the
 chat primitives better but required writing and maintaining a custom runtime adapter for
-AG-UI interrupts and shared state — code we'd defend in interviews but not ship value with.
+AG-UI interrupts and shared state — code we'd defend in a design review but not ship value with.
 Trade-off accepted: we pin to `@copilotkit/react-core@1.80` and documented the real APIs
 from installed `node_modules` type defs (citations in component headers), not blog snippets.
 
@@ -153,21 +112,3 @@ regions: progress updates are `aria-live="polite"` (`ProgressBar`), the stream p
 `text-slate-700` on white, white on `bg-red-800`/`bg-green-800`). The submit guard uses
 `aria-disabled` + `aria-describedby` instead of a dead native `disabled`, so screen readers
 announce *why* submission is blocked.
-
-## Known limitations (honest)
-
-- **LAN-IP http is a non-secure context**: `crypto.randomUUID()` is undefined there (the
-  original "button does nothing" bug). Handled by the `crypto.getRandomValues` fallback in
-  `web/lib/id.ts` (unit-tested by deleting `randomUUID` — `web/tests/id.test.ts`).
-- **`docker compose up` unverified on this host** (no Docker daemon in the dev container);
-  the YAML parses and images lint-clean, but they must be booted once on the Pi host
-  before claiming parity.
-- **RISK SCORE "unavailable"**: when the flaky scorer fails the panel showed `—`, which
-  reads like "no data yet". Fixed at M3B — `StatePanel.tsx` renders the sentinel
-  `state.risk_score === "unavailable"` verbatim (unit-tested). Caveat kept honest: the
-  failure path raises `ToolFailed` which carries no `StateSnapshotEvent`, so the sentinel
-  only reaches the client if a later snapshot lands; before that the panel still shows `—`.
-- Flaky tool is stochastic by default (50% fail); `FLAKY_ALWAYS_FAIL=1` exists for
-  deterministic failure tests — E2E deliberately does not depend on either mode.
-- Cancel registry is in-process and single-instance; a multi-replica `api` Deployment would
-  need a shared registry (or sticky routing) — noted, not built.
