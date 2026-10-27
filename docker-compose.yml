@@ -1,0 +1,25 @@
+services:
+  api:
+    build: .
+    ports:
+      - '8100:8100'
+    environment:
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://spark.chat:8000/v1}
+      LLM_MODEL: ${LLM_MODEL:-nvidia/Qwen3.8-Flash-Next-FP4-Local}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-local-vllm}
+      DATABASE_PATH: /app/data/reviewer.db
+      FLAKY_ALWAYS_FAIL: ${FLAKY_ALWAYS_FAIL:-0}
+    volumes:
+      - db:/app/data
+    restart: unless-stopped
+
+  web:
+    # M1 fills this in with the Next.js reviewer UI; nginx serves a placeholder for now.
+    image: nginx:1.27-alpine
+    ports:
+      - '8080:80'
+    depends_on:
+      - api
+
+volumes:
+  db:

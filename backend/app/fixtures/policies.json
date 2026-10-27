@@ -1,0 +1,32 @@
+[
+  {
+    "id": "POL-101",
+    "title": "Office and Outpatient Visit Services",
+    "body": "Evaluation and management services for established patients (CPT 99213-99215) are medically necessary when supported by documented chief complaint, history, examination, and medical decision making. Prior authorization is not required for levels 99213-99214; level 99215 requires documentation review.",
+    "applies_to": ["99213", "99214", "99215"]
+  },
+  {
+    "id": "POL-102",
+    "title": "Advanced Diagnostic Imaging - MRI",
+    "body": "MRI without contrast is covered when conservative therapy of at least 6 weeks has failed OR when red-flag findings are documented. MRI with contrast requires additional review of renal function documentation. Requests lacking conservative therapy documentation require prior authorization with clinical attestation.",
+    "applies_to": ["70551", "70553", "72148", "73721"]
+  },
+  {
+    "id": "POL-103",
+    "title": "Infusion Drug Administration",
+    "body": "Chemotherapy and biologic infusion administration (CPT 96413, 96415) is covered in ambulatory infusion centers when the drug itself is formulary-approved. Initial administration of non-formulary agents requires prior authorization including pathology report, line of therapy, and prescriber attestation.",
+    "applies_to": ["96413", "96415", "96365"]
+  },
+  {
+    "id": "POL-104",
+    "title": "Sleep Study Studies (PSG)",
+    "body": "In-lab polysomnography (CPT 95810) is covered for suspected obstructive sleep apnea when STOP-BANG score >= 3 or Epworth Sleepiness Scale >= 11 is documented, after a positive or inconclusive home sleep apnea test. Home sleep apnea testing is preferred as first-line in uncomplicated adults.",
+    "applies_to": ["95810", "95811"]
+  },
+  {
+    "id": "POL-105",
+    "title": "Physical Therapy Evaluation and Re-evaluation",
+    "body": "Physical therapy evaluation (97161-97163) is covered up to 12 visits per condition per calendar year with a documented plan of care. Re-evaluation (97164) requires documented measurable change in functional status. Home-based PT requires an homebound attestation.",
+    "applies_to": ["97161", "97162", "97163", "97164"]
+  }
+]

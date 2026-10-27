@@ -1,0 +1,44 @@
+[
+  {
+    "cpt": "99213",
+    "rule_id": "CR-001",
+    "criteria": "Established patient office visit; requires documented chief complaint, history, exam, and medical decision making.",
+    "outcome_guidance": "Approve. No prior authorization required at this level."
+  },
+  {
+    "cpt": "99215",
+    "rule_id": "CR-002",
+    "criteria": "High-complexity office visit; requires documentation supporting high complexity MDM or >30 minutes counseling.",
+    "outcome_guidance": "Approve only if documentation supports high complexity; otherwise downgrade to 99214."
+  },
+  {
+    "cpt": "70551",
+    "rule_id": "CR-003",
+    "criteria": "MRI cervical spine without contrast; requires >= 6 weeks failed conservative therapy or documented red flags (progressive neurologic deficit, trauma, malignancy history).",
+    "outcome_guidance": "Approve if conservative therapy failure or red flags are documented; otherwise request clinical attestation."
+  },
+  {
+    "cpt": "72148",
+    "rule_id": "CR-004",
+    "criteria": "MRI lumbar spine without contrast; same conservative therapy / red-flag criteria as CR-003.",
+    "outcome_guidance": "Approve with citation to POL-102 when criteria met; deny if imaging requested < 6 weeks into symptoms without red flags."
+  },
+  {
+    "cpt": "96413",
+    "rule_id": "CR-005",
+    "criteria": "Infusion of non-formulary chemotherapy agent; requires formulary exception, pathology report, and line-of-therapy documentation.",
+    "outcome_guidance": "Escalate: deny pending completion of prior authorization packet per POL-103."
+  },
+  {
+    "cpt": "95810",
+    "rule_id": "CR-006",
+    "criteria": "In-lab polysomnography; requires STOP-BANG >= 3 or ESS >= 11 plus prior inconclusive home sleep test.",
+    "outcome_guidance": "Approve when screening scores and prior HST result documented; otherwise direct to home sleep testing first (POL-104)."
+  },
+  {
+    "cpt": "97163",
+    "rule_id": "CR-007",
+    "criteria": "High-complexity physical therapy evaluation; requires plan of care and measurable functional deficits.",
+    "outcome_guidance": "Approve up to 12 visits per condition per calendar year per POL-105."
+  }
+]
