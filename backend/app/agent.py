@@ -92,21 +92,19 @@ def create_agent() -> Agent[StateDeps[ReviewState], str | DeferredToolRequests]:
         """Look up seeded coverage rules for a CPT/HCPCS code. Must be called first."""
         rules = [r for r in COVERAGE_RULES if r['cpt'] == cpt]
         state = ctx.deps.state
-        state.checked_count += len(rules)
         seen = {r['rule_id'] for r in rules}
         state.findings = [f for f in state.findings if f.rule_id not in seen]
         for rule in rules:
             state.findings.append(RuleFinding(**rule))
             state.record('lookup_coverage_rule', rule_id=rule['rule_id'], cpt=cpt)
-        delta = StateDeltaEvent(
-            delta=[
-                {'op': 'replace', 'path': '/checked_count', 'value': state.checked_count},
-                {'op': 'replace', 'path': '/findings', 'value': [f.model_dump() for f in state.findings]},
-            ]
-        )
+        # Snapshot, not delta: the client state tree is still {} at the first tool of a
+        # fresh thread, so an RFC-6902 `replace` has no path to write to
+        # (OPERATION_PATH_UNRESOLVABLE crashes the runtime's state machine). Snapshots are
+        # path-free and initialize the tree for every later event.
+        snapshot = StateSnapshotEvent(snapshot=state.model_dump(mode='json'))
         return ToolReturn(
             return_value=json.dumps({'cpt': cpt, 'rules': rules}),
-            metadata=delta,
+            metadata=snapshot,
         )
 
     @agent.tool
@@ -141,14 +139,26 @@ def create_agent() -> Agent[StateDeps[ReviewState], str | DeferredToolRequests]:
             raise ToolFailed('Risk scoring service timed out. Report that risk scoring is unavailable and continue.') from None
         state.risk_score = 'low'
         state.record('score_claim_risk', cpt=cpt, risk='low')
-        return json.dumps({'cpt': cpt, 'risk_score': 'low', 'factors': []})
+        return ToolReturn(
+            return_value=json.dumps({'cpt': cpt, 'risk_score': 'low', 'factors': []}),
+            metadata=StateSnapshotEvent(snapshot=state.model_dump(mode='json')),
+        )
 
-    @agent.tool_plain(requires_approval=True)
-    def propose_decision(decision: str, rationale: str, cited_policy_ids: list[str]) -> str:
+    @agent.tool(requires_approval=True)
+    def propose_decision(ctx: RunContext[StateDeps[ReviewState]], decision: str, rationale: str, cited_policy_ids: list[str]) -> ToolReturn:
         """Propose the final coverage decision. Always the last call; requires reviewer approval."""
-        return (
-            f'Decision "{decision}" proposed with rationale: {rationale} '
-            f'Cited policies: {", ".join(cited_policy_ids) or "none"}. Awaiting reviewer approval.'
+        state = ctx.deps.state
+        state.recommendation = decision
+        state.citations = list(cited_policy_ids)
+        state.record('propose_decision_executed', decision=decision, cited=cited_policy_ids)
+        return ToolReturn(
+            return_value=(
+                f'Decision "{decision}" proposed with rationale: {rationale} '
+                f'Cited policies: {", ".join(cited_policy_ids) or "none"}. Awaiting reviewer approval.'
+            ),
+            # Snapshot on execution (post-approval resume) so the reviewer panel shows the
+            # recommendation without waiting for on_complete, which fires after the last event.
+            metadata=StateSnapshotEvent(snapshot=state.model_dump(mode='json')),
         )
 
     return agent

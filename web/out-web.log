@@ -1,0 +1,9 @@
+npm notice run web@0.1.0 start
+npm notice run next start
+   ▲ Next.js 15.5.28
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.2.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 3.3s
+[CopilotKit Runtime] telemetry enabled — see https://docs.copilotkit.ai/telemetry to opt out (set COPILOTKIT_TELEMETRY_DISABLED=true).

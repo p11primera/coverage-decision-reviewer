@@ -11,6 +11,7 @@
 import { useState, type FormEvent } from "react";
 
 import { UseAgentUpdate, useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
+import { newId } from "@/lib/id";
 
 const DEFAULT_CPT = "72148"; // fixtures/coverage_rules.json has rules for it
 
@@ -40,7 +41,7 @@ export function RequestForm() {
     if (!isReady || running) return;
     setError(null);
     agent.addMessage({
-      id: crypto.randomUUID(),
+      id: newId(), // LAN-IP (non-secure-context) safe: see lib/id.ts
       role: "user",
       content: JSON.stringify({ patient_summary: patientSummary, cpt, notes }),
     });
