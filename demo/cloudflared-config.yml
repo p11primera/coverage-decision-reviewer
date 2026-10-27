@@ -1,0 +1,20 @@
+# Cloudflare named-tunnel config for the Coverage Decision Reviewer demo.
+# Lives in the repo for reference; the ACTIVE copy goes to the Pi host at
+#   ~/.cloudflared/evolent-demo.yml
+# Replace <TUUID> with the tunnel UUID printed by `cloudflared tunnel create`
+# (credentials land at ~/.cloudflared/<TUUID>.json).
+
+tunnel: evolent-demo
+credentials-file: /home/p11primera/.cloudflared/<TUUID>.json
+
+ingress:
+  # Single rule: everything to the web container's published port. The BFF owns
+  # the trust boundary; the API (127.0.0.1:8100, see docker-compose.yml) and the
+  # LLM (LAN-only spark.chat) are unreachable through this tunnel by design.
+  - hostname: reviewer.<your-domain>
+    service: http://localhost:3000
+  # Required catch-all.
+  - service: http_status:404
+
+# Optional hardening while the demo is up: log the requests Cloudflare forwards.
+# log: /home/p11primera/cloudflared-demo.log
