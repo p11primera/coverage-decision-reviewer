@@ -285,7 +285,13 @@ export function ApprovalCard() {
         setToolCalls((prev) => {
           const entry = prev[event.toolCallId];
           if (!entry) return prev;
-          const failed = /timed out|error|fail/i.test(String(event.content ?? ""));
+          // Status MUST come from a structured marker, never free-text matching: the
+          // propose_decision result content embeds the model's own clinical rationale,
+          // which legitimately contains words like "conservative therapy has failed"
+          // — a /fail/i content sniff rendered successful approvals as "failed".
+          // agent.py prefixes genuine ToolFailed results with TOOL_FAILED: (the AG-UI
+          // ToolCallResultEvent has no error field — content is the only channel).
+          const failed = /^\s*TOOL_FAILED:/.test(String(event.content ?? ""));
           return { ...prev, [event.toolCallId]: { ...entry, status: failed ? "failed" : "ok" } };
         });
       },

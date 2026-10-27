@@ -7,7 +7,9 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { UseAgentUpdate, useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 
@@ -78,16 +80,41 @@ function CitationChip({ policyId }: { policyId: string }) {
   );
 }
 
-/** Inline-citation renderer: splits on [POL-###] tokens and swaps them for chips. */
-function withCitations(text: string) {
-  return text.split(/(\[POL-\d+\])/g).map((part, i) =>
-    /^\[POL-\d+\]$/.test(part) ? (
-      <CitationChip key={i} policyId={part.slice(1, -1)} />
-    ) : (
-      <span key={i}>{part}</span>
-    ),
-  );
+/**
+ * Inline-citation handling for the Markdown renderer: rewrites the model's bracketed
+ * [POL-###] tokens into markdown links with a pol:// scheme BEFORE parsing, then the
+ * `a` component override below renders those links as interactive CitationChips.
+ * (Plain <p>{text}</p> showed raw markdown — the narrative is genuine LLM output and
+ * the model emits markdown emphasis/lists; rendering it is the honest display.)
+ */
+function citeToLink(text: string) {
+  return text.replace(/\[(POL-\d+)\]/g, "[$1](pol://$1)");
 }
+
+const MD_COMPONENTS = {
+  p: ({ children }: { children?: ReactNode }) => (
+    <p className="mt-2 text-sm leading-6 text-slate-900 first:mt-0">{children}</p>
+  ),
+  strong: ({ children }: { children?: ReactNode }) => (
+    <strong className="font-semibold">{children}</strong>
+  ),
+  em: ({ children }: { children?: ReactNode }) => <em>{children}</em>,
+  ul: ({ children }: { children?: ReactNode }) => (
+    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-slate-900">{children}</ul>
+  ),
+  ol: ({ children }: { children?: ReactNode }) => (
+    <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-6 text-slate-900">{children}</ol>
+  ),
+  li: ({ children }: { children?: ReactNode }) => <li>{children}</li>,
+  a: ({ href, children }: { href?: string; children?: ReactNode }) =>
+    href?.startsWith("pol://") ? (
+      <CitationChip policyId={href.slice("pol://".length)} />
+    ) : (
+      <a className="text-blue-800 underline" href={href}>
+        {children}
+      </a>
+    ),
+} as const;
 
 export function ReviewStream({ reviewer }: { reviewer: string }) {
   const { copilotkit } = useCopilotKit();
@@ -155,9 +182,19 @@ export function ReviewStream({ reviewer }: { reviewer: string }) {
         Review narrative {running ? <span className="animate-pulse">●</span> : null}
       </h2>
       {narrative ? (
-        <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-900">
-          {withCitations(narrative)}
-        </p>
+        <div className="mt-3">
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            components={MD_COMPONENTS}
+            // react-markdown's default urlTransform blanks unknown protocols — ours is
+            // pol:// (citation chips). Allowlist it plus http(s); everything else blanked.
+            urlTransform={(url) =>
+              url.startsWith("pol://") || /^https?:/i.test(url) ? url : ""
+            }
+          >
+            {citeToLink(narrative)}
+          </Markdown>
+        </div>
       ) : (
         <>
           <p className="mt-3 text-sm text-slate-500">

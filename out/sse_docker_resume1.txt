@@ -1,0 +1,176 @@
+data: {"type":"RUN_STARTED","timestamp":1793125720888,"threadId":"thread-pa-demo-001","runId":"9d7b1663-733f-43c2-9f1d-80a1c7b48925"}
+
+data: {"type":"TOOL_CALL_RESULT","timestamp":1793125720902,"messageId":"5b2f22df-f258-429b-bfad-81d8f51d5e8a","toolCallId":"chatcmpl-tool-99ec3c5f92416228","content":"Decision \"approve\" proposed with rationale: The patient meets all criteria under CR-004/POL-102 for MRI lumbar spine without contrast: symptoms exceed 6 weeks (8 weeks), multiple red flags are present (progressive foot drop, saddle numbness, reduced anal sphincter tone, history of renal cell carcinoma), and conservative therapy (NSAIDs, physical therapy) has failed. All four claim checks passed and risk scoring returned low risk with no adverse factors. The clinical presentation is highly concerning for cauda equina compression and/or metastatic disease, making urgent MRI imaging medically necessary. Cited policies: POL-102. Awaiting reviewer approval.","role":"tool"}
+
+data: {"type":"STATE_SNAPSHOT","timestamp":1793125720903,"snapshot":{"request":{"patient_summary":"52-year-old male with 8 weeks of progressive low back pain radiating to the left leg, worsening foot drop, and saddle numbness. History of treated renal cell carcinoma.","cpt":"72148","notes":"Neurologic exam shows 3/5 left ankle dorsiflexion and reduced anal sphincter tone. NSAIDs and physical therapy have not relieved symptoms. MRI lumbar spine without contrast requested to rule out cauda equina compression and metastatic disease."},"checked_count":0,"total_checks":0,"findings":[],"risk_score":null,"recommendation":"approve","citations":["POL-102"],"audit_events":[{"action":"propose_decision_executed","at":"2026-10-27T18:28:40.901068+00:00","decision":"approve","cited":["POL-102"]}]}}
+
+data: {"type":"REASONING_START","timestamp":1793125722219,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f"}
+
+data: {"type":"REASONING_MESSAGE_START","timestamp":1793125722219,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f","role":"reasoning"}
+
+data: {"type":"REASONING_MESSAGE_CONTENT","timestamp":1793125722219,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f","delta":"The"}
+
+data: {"type":"REASONING_MESSAGE_CONTENT","timestamp":1793125722282,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f","delta":" decision has been proposed and"}
+
+data: {"type":"REASONING_MESSAGE_CONTENT","timestamp":1793125722350,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f","delta":" is awaiting reviewer approval."}
+
+data: {"type":"REASONING_MESSAGE_CONTENT","timestamp":1793125722414,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f","delta":" Let"}
+
+data: {"type":"REASONING_MESSAGE_CONTENT","timestamp":1793125722478,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f","delta":" me summarize the review"}
+
+data: {"type":"REASONING_MESSAGE_CONTENT","timestamp":1793125722546,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f","delta":" for the user.\n"}
+
+data: {"type":"REASONING_MESSAGE_END","timestamp":1793125722611,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f"}
+
+data: {"type":"REASONING_ENCRYPTED_VALUE","timestamp":1793125722612,"subtype":"message","entityId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f","encryptedValue":"{\"id\": \"reasoning\", \"provider_name\": \"openai\"}"}
+
+data: {"type":"REASONING_END","timestamp":1793125722612,"messageId":"3558ccaf-4ca9-46c5-86c1-8e59bf24473f"}
+
+data: {"type":"TEXT_MESSAGE_START","timestamp":1793125722613,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","role":"assistant"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125722614,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"\n\n## Prior"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125722672,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Authorization Review Complete\n\n**"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125722736,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"CPT "}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125722803,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"72148"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125722868,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" —"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125722932,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" MRI Lumbar Spine"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723007,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Without"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723074,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Contrast**\n\n###"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723131,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Decision"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723198,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":": ✅"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723260,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" APPRO"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723328,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"VE (pending reviewer sign"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723396,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"-off)\n\n###"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723464,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Summary of Findings:"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723529,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"\n\n| Check"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723590,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" | Result |\n|"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723655,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"-------|--------"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723728,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"|\n| Medical"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723790,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Necessity | ✅"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723859,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Pass |\n| Documentation"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723926,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Completeness | ✅ Pass"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125723999,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" |\n| Policy Criteria"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724076,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" | ✅ Pass |\n"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724147,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"| Coding Validity |"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724216,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" ✅ Pass |\n|"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724283,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Claim"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724346,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" Risk Score | Low"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724414,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" |"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724480,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"\n\n### Key R"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724542,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"ationale:\n"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724608,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"- **Sym"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724673,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"ptom"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724744,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" duration:** 8 weeks"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724808,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" (exceeds the"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724877,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" 6-week threshold in"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125724946,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" [POL-"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725018,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"102])\n"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725085,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"- **Red flags"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725149,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" present:** Progressive"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725220,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" foot"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725281,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" drop (3/5"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725352,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" dorsiflexion),"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725416,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" saddle numbness, reduced"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725486,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" anal sphincter tone"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725554,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":", history"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725624,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" of renal cell carcinoma\n"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725688,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"- **Cons"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725756,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"ervative therapy:**"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725830,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" NSA"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725891,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"IDs and physical"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125725956,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" therapy attempted"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726026,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" without relief"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726092,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"\n- **Clinical"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726160,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" concern:** C"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726224,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"auda equ"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726287,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"ina syndrome and/or"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726355,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" metastatic spinal"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726421,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" disease"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726499,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"\n\nThe"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726562,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" imaging is"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726627,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" medically urgent"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726698,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" given"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726760,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" the progressive"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726827,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" neurological deficits and onc"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726888,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"ologic history. Approval"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125726960,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" is recommended under"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125727026,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" coverage"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125727100,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":" rule CR-00"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125727162,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"4 citing ["}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125727229,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"POL-102"}
+
+data: {"type":"TEXT_MESSAGE_CONTENT","timestamp":1793125727301,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a","delta":"]."}
+
+data: {"type":"TEXT_MESSAGE_END","timestamp":1793125727305,"messageId":"c7387577-3482-468c-a1d6-c4094d7e3b4a"}
+
+data: {"type":"RUN_FINISHED","timestamp":1793125727333,"threadId":"thread-pa-demo-001","runId":"9d7b1663-733f-43c2-9f1d-80a1c7b48925","outcome":{"type":"success"}}
+

@@ -136,7 +136,7 @@ def create_agent() -> Agent[StateDeps[ReviewState], str | DeferredToolRequests]:
         except asyncio.TimeoutError:
             state.risk_score = 'unavailable'
             state.record('score_claim_risk_failed', cpt=cpt)
-            raise ToolFailed('Risk scoring service timed out. Report that risk scoring is unavailable and continue.') from None
+            raise ToolFailed('TOOL_FAILED: Risk scoring service timed out. Report that risk scoring is unavailable and continue.') from None
         state.risk_score = 'low'
         state.record('score_claim_risk', cpt=cpt, risk='low')
         return ToolReturn(
