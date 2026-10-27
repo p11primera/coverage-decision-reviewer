@@ -47,13 +47,13 @@ export function LoginForm() {
           pattern="[A-Za-z0-9][A-Za-z0-9 ._-]{0,31}"
           title="Letters, digits, spaces, dot, underscore, dash (max 32 chars)"
           placeholder="Dr. Dana Reviewer"
-          className="mt-1 w-full rounded border border-slate-400 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+          className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
         />
       </label>
       <button
         type="submit"
         disabled={busy}
-        className="mt-4 w-full rounded bg-blue-800 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-900 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+        className="mt-4 w-full rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
       >
         {busy ? "Signing in…" : "Sign in"}
       </button>

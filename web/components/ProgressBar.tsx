@@ -73,7 +73,7 @@ export function ProgressBar() {
       aria-label="Claim checks progress"
       className="rounded-lg border border-slate-300 bg-white p-4 shadow-sm"
     >
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
         Claim checks
       </h2>
       <div
@@ -85,7 +85,7 @@ export function ProgressBar() {
         className="mt-3 h-3 w-full overflow-hidden rounded bg-slate-200"
       >
         <div
-          className="h-full bg-blue-800 transition-[width] duration-300"
+          className="h-full bg-brand transition-[width] duration-300"
           style={{ width: `${percent}%` }}
         />
       </div>

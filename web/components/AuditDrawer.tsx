@@ -99,7 +99,7 @@ export function AuditDrawer() {
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="text-sm text-blue-800 underline hover:text-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+        className="text-sm text-white underline hover:text-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
       >
         Audit trail
       </button>
@@ -121,15 +121,15 @@ export function AuditDrawer() {
               shown ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            <header className="flex items-baseline justify-between border-b border-slate-300 p-6 pb-3">
-              <h2 id="audit-drawer-title" className="text-lg font-bold text-slate-900">
+            <header className="flex items-baseline justify-between bg-navy p-6 pb-3 text-white">
+              <h2 id="audit-drawer-title" className="text-lg font-bold text-white">
                 Audit trail
               </h2>
               <button
                 type="button"
                 onClick={close}
                 aria-label="Close audit trail"
-                className="rounded px-2 py-1 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+                className="rounded px-2 py-1 text-sm font-semibold text-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
               >
                 Close ✕
               </button>
@@ -161,7 +161,7 @@ export function AuditDrawer() {
                   <table className="w-full border-collapse text-left text-sm text-slate-900">
                     <caption className="sr-only">Append-only reviewer audit trail</caption>
                     <thead>
-                      <tr className="border-b-2 border-slate-400 text-xs uppercase tracking-wide text-slate-600">
+                      <tr className="bg-navy text-xs uppercase tracking-wide text-white">
                         <th scope="col" className="p-2">When (UTC)</th>
                         <th scope="col" className="p-2">Who (actor)</th>
                         <th scope="col" className="p-2">Action</th>
@@ -174,7 +174,7 @@ export function AuditDrawer() {
                     </thead>
                     <tbody>
                       {rows.map((row) => (
-                        <tr key={row.id} className="border-b border-slate-200 align-top">
+                        <tr key={row.id} className="border-b border-slate-200 bg-white align-top odd:bg-slate-50">
                           <td className="whitespace-nowrap p-2 font-mono text-xs">{row.at}</td>
                           <td className="p-2 font-semibold">{row.actor}</td>
                           <td className="p-2">{row.action}</td>

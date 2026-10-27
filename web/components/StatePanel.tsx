@@ -56,7 +56,7 @@ export function StatePanel() {
       aria-live="polite"
       className="rounded-lg border border-slate-300 bg-white p-4 shadow-sm"
     >
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
         Reviewer state
       </h2>
 
@@ -90,7 +90,7 @@ export function StatePanel() {
         </p>
       ) : null}
 
-      <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-600">
+      <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-soft">
         Rule findings ({state.findings?.length ?? 0})
       </h3>
       <ul className="mt-1 space-y-1">
@@ -104,7 +104,7 @@ export function StatePanel() {
 
       {(state.citations?.length ?? 0) > 0 ? (
         <>
-          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-600">
+          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-soft">
             Cited policies
           </h3>
           <ul className="mt-1 flex flex-wrap gap-1">

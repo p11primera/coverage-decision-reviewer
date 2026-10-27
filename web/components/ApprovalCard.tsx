@@ -149,7 +149,7 @@ function DecisionCard({
           rows={2}
           required={!denyEnabled}
           aria-required="true"
-          className="mt-1 w-full rounded border border-slate-400 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+          className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
         />
       </label>
 
@@ -158,7 +158,7 @@ function DecisionCard({
           type="button"
           onClick={() => setEditing((v) => !v)}
           aria-expanded={editing}
-          className="rounded border border-slate-400 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+          className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
         >
           {editing ? "Hide args editor" : "Edit args"}
         </button>
@@ -175,7 +175,7 @@ function DecisionCard({
               }}
               rows={6}
               aria-invalid={!argsValid}
-              className="mt-1 w-full rounded border border-slate-400 bg-white p-2 font-mono text-xs text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+              className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 font-mono text-xs text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
             />
           </label>
           {!argsValid ? (
@@ -207,7 +207,7 @@ function DecisionCard({
           type="button"
           disabled={!approveEnabled}
           onClick={() => respond(true)}
-          className="rounded bg-green-800 px-4 py-2 text-sm font-semibold text-white hover:bg-green-900 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+          className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           Approve
         </button>
@@ -216,7 +216,7 @@ function DecisionCard({
           disabled={!denyEnabled}
           onClick={() => respond(false)}
           title={denyEnabled ? undefined : "A rationale is required to deny"}
-          className="rounded bg-red-800 px-4 py-2 text-sm font-semibold text-white hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+          className="rounded-lg border-2 border-brand bg-transparent px-4 py-2 text-sm font-medium text-brand hover:bg-brand/5 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           Deny
         </button>
@@ -320,7 +320,7 @@ export function ApprovalCard() {
       aria-label="Approval and tool activity"
       className="rounded-lg border border-slate-300 bg-white p-4 shadow-sm"
     >
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
         Tool activity
       </h2>
       {/* WHY per-call rows are preserved (not merged): the toolCallId-keyed map is a

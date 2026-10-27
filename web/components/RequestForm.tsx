@@ -155,7 +155,7 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
       aria-label="Prior authorization request"
       className="rounded-lg border border-slate-300 bg-white p-4 shadow-sm"
     >
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
         New coverage request
       </h2>
       <div className="mt-3 grid gap-3">
@@ -166,7 +166,7 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
             onChange={(e) => setPatientSummary(e.target.value)}
             rows={3}
             required
-            className="mt-1 w-full rounded border border-slate-400 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+            className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
           />
         </label>
         <label className="block text-sm text-slate-700">
@@ -177,7 +177,7 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
             required
             pattern="[0-9A-Z]{4,7}"
             title="4-7 alphanumeric code"
-            className="mt-1 w-full rounded border border-slate-400 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+            className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
           />
         </label>
         <label className="block text-sm text-slate-700">
@@ -187,7 +187,7 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
             onChange={(e) => setNotes(e.target.value)}
             rows={4}
             required
-            className="mt-1 w-full rounded border border-slate-400 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+            className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
           />
         </label>
       </div>
@@ -198,10 +198,10 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
           title={blocked ? blockedReason : undefined}
           aria-describedby={blocked ? "submit-blocked-reason" : undefined}
           data-testid="submit-button"
-          className={`mt-0 rounded px-4 py-2 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 ${
+          className={`mt-0 rounded-lg px-4 py-2 text-sm font-medium text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
             blocked
-              ? "cursor-not-allowed bg-blue-800/50"
-              : "bg-blue-800 hover:bg-blue-900"
+              ? "cursor-not-allowed bg-brand/50"
+              : "bg-brand hover:bg-brand-dark"
           }`}
         >
           {running ? "Review running…" : isReady ? "Submit for review" : "Connecting…"}

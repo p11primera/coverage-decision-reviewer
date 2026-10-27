@@ -1,26 +1,44 @@
 @import "tailwindcss";
 
+/* Evolent-inspired design tokens (independent, unaffiliated reinterpretation):
+   deep navy ink, light gray paper, purple primary action, mint-teal decorative
+   accent, Montserrat. Palette/typography feel only — no logos, wordmarks,
+   licensed fonts, or copied marketing copy. Teal is decorative-on-dark ONLY
+   (fails contrast as text on white); purple carries interactive affordances.
+   No prefers-color-scheme dark override: the review UI is deliberately
+   light-surface (clinical tools read best on paper; dark sections are
+   explicit navy chrome, not an auto theme). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f4f4; /* paper — light section gray */
+  --foreground: #020623; /* ink — near-black navy */
+  --ink-soft: #25282a;
+  --brand: #7c1c93; /* purple — primary buttons, emphasis */
+  --brand-dark: #5f1571;
+  --accent: #08f0d5; /* mint-teal — decorative on navy only */
+  --navy: #020623;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-ink-soft: var(--ink-soft);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-accent: var(--accent);
+  --color-navy: var(--navy);
+  --font-sans: var(--font-montserrat), Arial, Helvetica, sans-serif;
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+/* Reference cadence: large, light-weight, tight-tracked headings. */
+h1,
+h2 {
+  letter-spacing: -0.02em;
+  font-weight: 400;
 }

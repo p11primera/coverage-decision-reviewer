@@ -110,7 +110,7 @@ const MD_COMPONENTS = {
     href?.startsWith("pol://") ? (
       <CitationChip policyId={href.slice("pol://".length)} />
     ) : (
-      <a className="text-blue-800 underline" href={href}>
+      <a className="text-brand underline hover:text-brand-dark" href={href}>
         {children}
       </a>
     ),
@@ -178,7 +178,7 @@ export function ReviewStream({ reviewer }: { reviewer: string }) {
       aria-busy={running}
       className="min-h-40 rounded-lg border border-slate-300 bg-white p-4 shadow-sm"
     >
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
         Review narrative {running ? <span className="animate-pulse">●</span> : null}
       </h2>
       {narrative ? (

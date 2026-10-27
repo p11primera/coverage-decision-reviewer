@@ -35,10 +35,14 @@ export default async function ReviewerPage() {
     // same set of islands, just one level higher.
     <ReviewerProvider>
       <main className="mx-auto max-w-6xl p-6">
-        <header className="flex items-baseline justify-between border-b border-slate-300 pb-3">
-          <h1 className="text-xl font-bold text-slate-900">Coverage Decision Reviewer</h1>
+        <header className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-navy px-6 py-4 text-white">
+          <div>
+            <h1 className="text-lg font-semibold">Coverage Decision Reviewer</h1>
+            {/* M4: teal accent rule — decorative graphic on navy only (contrast law). */}
+            <div aria-hidden="true" className="mt-1 h-[3px] w-10 bg-accent" />
+          </div>
           <nav className="flex items-center gap-4 text-sm" aria-label="Primary">
-            <span className="text-slate-700">
+            <span className="text-white">
               {/* M3A: live connection pill (client island) beside the reviewer name —
                   connected / streaming / failed, driven by the agent subscription. */}
               Signed in as <span className="font-semibold">{reviewer}</span>{" "}
@@ -50,7 +54,7 @@ export default async function ReviewerPage() {
           <AuditDrawer />
           <Link
             href="/login?switch=1"
-            className="text-blue-800 underline hover:text-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+            className="text-white underline hover:text-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             Switch reviewer
           </Link>

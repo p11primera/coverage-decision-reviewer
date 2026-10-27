@@ -40,7 +40,7 @@ export default async function AuditPage() {
         <h1 className="text-xl font-bold text-slate-900">Audit trail</h1>
         <Link
           href="/"
-          className="text-sm text-blue-800 underline hover:text-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+          className="text-sm text-brand underline hover:text-brand-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
         >
           Back to review
         </Link>
@@ -52,7 +52,7 @@ export default async function AuditPage() {
           <table className="w-full border-collapse text-left text-sm text-slate-900">
             <caption className="sr-only">Append-only reviewer audit trail</caption>
             <thead>
-              <tr className="border-b-2 border-slate-400 text-xs uppercase tracking-wide text-slate-600">
+              <tr className="bg-navy text-xs uppercase tracking-wide text-white">
                 <th scope="col" className="p-2">When (UTC)</th>
                 <th scope="col" className="p-2">Who (actor)</th>
                 <th scope="col" className="p-2">Action</th>
@@ -65,7 +65,7 @@ export default async function AuditPage() {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="border-b border-slate-200 align-top">
+                <tr key={row.id} className="border-b border-slate-200 bg-white align-top odd:bg-slate-50">
                   <td className="whitespace-nowrap p-2 font-mono text-xs">{row.at}</td>
                   <td className="p-2 font-semibold">{row.actor}</td>
                   <td className="p-2">{row.action}</td>

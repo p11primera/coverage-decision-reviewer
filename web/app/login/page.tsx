@@ -24,10 +24,26 @@ export default async function LoginPage({
   if (!switching && reviewerFromCookieHeader(cookieHeader)) redirect("/");
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-4 p-6">
-      <h1 className="text-xl font-bold text-slate-900">Coverage Decision Reviewer</h1>
-      <p className="text-sm text-slate-600">Dev-mode sign-in: pick any reviewer name.</p>
-      <LoginForm />
+    <main className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
+      {/* M4 hero left panel: navy chrome. Teal underline block is decorative-on-dark only
+          (contrast law); sentence below is original plain description, not copied copy. */}
+      <section className="flex flex-col justify-center bg-navy p-12 text-white">
+        <h1 className="text-3xl font-normal tracking-tight">Coverage Decision Reviewer</h1>
+        <div aria-hidden="true" className="mt-3 h-[3px] w-10 bg-accent" />
+        <p className="mt-6 max-w-md text-sm leading-6 text-white/80">
+          Submit a prior-authorization request and the agent checks it rule by rule against
+          the policy library, writing down every step so a reviewer can sign off with
+          confidence.
+        </p>
+      </section>
+      <section className="flex flex-col items-center justify-center gap-4 bg-background p-6">
+        <p className="w-full max-w-sm text-sm text-slate-600">
+          Dev-mode sign-in: pick any reviewer name.
+        </p>
+        <div className="w-full max-w-sm rounded-lg border border-slate-300 bg-white p-6 shadow-sm">
+          <LoginForm />
+        </div>
+      </section>
     </main>
   );
 }
