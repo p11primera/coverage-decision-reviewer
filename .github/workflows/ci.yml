@@ -26,7 +26,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 22+: jsdom's bundled undici needs modern Node APIs (Node 20 runners
+          # die in lib/interceptor/decompress.js). Dev box runs Node 26.
+          node-version: 22
           cache: npm
           cache-dependency-path: web/package-lock.json
 
