@@ -123,6 +123,19 @@ export function ReviewStream({ reviewer }: { reviewer: string }) {
     ?.content as string | undefined;
   const running = agent.isRunning;
 
+  // M3A retry semantics (honest documentation): Retry calls copilotkit.runAgent again on
+  // the SAME agent instance and SAME threadId. That is a NEW agent run, not a byte-level
+  // resume of the dead SSE: HttpAgent.runAgent
+  // (web/node_modules/@ag-ui/client/dist/index.d.ts:303-319) POSTs a fresh RunAgentInput,
+  // and because the server owns history (M0 design), the backend replays this thread's
+  // persisted ModelMessages from SQLite and the model continues from where the durable
+  // history ends. Concretely: a stream that died before its last message was persisted
+  // (connection refused / mid-run death — on_complete never ran, nothing was appended)
+  // effectively resumes at the last persisted point; a stream that died after persistence
+  // continues the conversation from there. There is no mid-tool-call replay: a partially
+  // executed tool is re-run from scratch by the model. The user message that started the
+  // failed run is still in agent.messages, so the BFF's last-user-message filter resends
+  // exactly the original request.
   async function retry() {
     setStreamError(null);
     try {

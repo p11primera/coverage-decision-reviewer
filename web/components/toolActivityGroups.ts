@@ -16,7 +16,10 @@
 // "Consecutive" = adjacent in call order; non-adjacent same-name calls (separated by
 // a different tool) are NOT grouped across unrelated phases.
 
-export type ToolCallStatus = "running" | "ok" | "failed";
+// "stopped" (M3A): a chip frozen at "running" the moment the reviewer cancelled — the
+// backend killed the tool mid-flight, so its true outcome is unknown and a frozen
+// "running" chip would be exactly the hung spinner the M3A spec forbids.
+export type ToolCallStatus = "running" | "ok" | "failed" | "stopped";
 
 export interface ToolCallView {
   name: string;

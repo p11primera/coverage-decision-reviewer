@@ -1,3 +1,19 @@
+# Coverage Decision Reviewer — full stack (api + web) in portable containers.
+#
+# AKS mapping (interview/portability note, replaces the M0 placeholder):
+#   api  -> Deployment "api"  (image from root Dockerfile), ClusterIP Service :8100,
+#           /data on a PVC (the named volume below = the dev stand-in for a
+#           storageClass-backed PVC mounted at /data; ReadWriteOnce is enough —
+#           single-writer SQLite, and AKS would use one replica + Recreate strategy).
+#   web  -> Deployment "web"  (image from web/Dockerfile), Service :3000 behind the
+#           cluster ingress. Stateless: scale replicas freely.
+#   Secrets: SESSION_SECRET + OPENAI_API_KEY from k8s Secret; LLM_* / AGENT_URL from
+#           ConfigMap. No Vercel, no vendor lock-in: plain OCI images + env vars.
+#
+# Dev-container note: the Docker daemon is NOT available here, so this file was
+# validated with `docker compose config` (client-side parse+merge, no daemon) — see
+# out/M3A_STATUS.md for the honest verification record.
+
 services:
   api:
     build: .
@@ -7,19 +23,45 @@ services:
       LLM_BASE_URL: ${LLM_BASE_URL:-http://spark.chat:8000/v1}
       LLM_MODEL: ${LLM_MODEL:-nvidia/Qwen3.8-Flash-Next-FP4-Local}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-local-vllm}
-      DATABASE_PATH: /app/data/reviewer.db
+      DATABASE_PATH: /data/reviewer.db
       FLAKY_ALWAYS_FAIL: ${FLAKY_ALWAYS_FAIL:-0}
+      NEXT_TELEMETRY_DISABLED: "1"
+      COPILOTKIT_TELEMETRY_DISABLED: "true"
     volumes:
-      - db:/app/data
+      # hermes-style named volume for the durable half of the app: agent message
+      # history + append-only audit trail (SQLite). In AKS this exact mount becomes a
+      # PVC (see header).
+      - hermes-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8100/healthz', timeout=2).status==200 else 1)"]
+      interval: 15s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
     restart: unless-stopped
 
   web:
-    # M1 fills this in with the Next.js reviewer UI; nginx serves a placeholder for now.
-    image: nginx:1.27-alpine
+    # M3A: real Next.js reviewer UI (was the M0 nginx placeholder). Nodejs-runtime
+    # route handlers only; the BFF reads SESSION_SECRET + AGENT_URL from env at
+    # REQUEST time, so the image is env-agnostic.
+    build: ./web
     ports:
-      - '8080:80'
+      - '3000:3000'
+    environment:
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET (e.g. openssl rand -hex 32)}
+      AGENT_URL: http://api:8100/agent
+      NEXT_TELEMETRY_DISABLED: "1"
+      COPILOTKIT_TELEMETRY_DISABLED: "true"
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/login"]
+      interval: 15s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+    restart: unless-stopped
 
 volumes:
-  db:
+  hermes-data:

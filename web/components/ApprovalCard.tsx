@@ -18,7 +18,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   UseAgentUpdate,
@@ -26,6 +26,8 @@ import {
   useInterrupt,
   type Interrupt,
 } from "@copilotkit/react-core/v2";
+
+import { subscribeRunCancelled } from "@/lib/cancelBus";
 
 import {
   groupConsecutiveAttempts,
@@ -43,6 +45,8 @@ const STATUS_CHIP: Record<ToolCallStatus, string> = {
   running: "bg-amber-100 text-amber-900",
   ok: "bg-green-100 text-green-900",
   failed: "bg-red-100 text-red-900",
+  // M3A: frozen at cancel time — slate = terminal/unknown, AA on slate-50 chip bg.
+  stopped: "bg-slate-300 text-slate-800",
 };
 
 function DecisionCard({
@@ -230,18 +234,43 @@ export function ApprovalCard() {
     updates: [UseAgentUpdate.OnRunStatusChanged],
   });
   const [toolCalls, setToolCalls] = useState<Record<string, ToolCallView>>({});
+  // M3A freeze latch: once the reviewer's cancel is accepted, chip state stops tracking
+  // the dying stream — a cancelled run may still flush trailing TOOL_CALL_* frames, and
+  // letting them land would keep chips mutating (or leave "running" chips hanging, which
+  // is the hung-spinner defect the spec forbids). Cleared when the NEXT run starts.
+  // WHY the cancel comes from lib/cancelBus rather than a subscriber hook: the backend
+  // emits a bare RUN_FINISHED on cancel (pydantic-ai _event_stream.py:231-238 has no
+  // cancelled outcome), so no agent event can distinguish cancel from success here.
+  const frozen = useRef(false);
+
+  useEffect(() => subscribeRunCancelled(() => {
+    frozen.current = true;
+    setToolCalls((prev) => {
+      const next: Record<string, ToolCallView> = {};
+      for (const [id, t] of Object.entries(prev)) {
+        next[id] = t.status === "running" ? { ...t, status: "stopped" } : t;
+      }
+      return next;
+    });
+  }), []);
 
   // TOOL_CALL_* → status chips (running → ok/failed), per @ag-ui/client AgentSubscriber
   // (web/node_modules/@ag-ui/client/dist/index.d.ts:220-233).
   useEffect(() => {
     if (!isReady) return;
     const sub = agent.subscribe({
-      onToolCallStartEvent: ({ event }) =>
+      onRunStartedEvent: () => {
+        frozen.current = false;
+      },
+      onToolCallStartEvent: ({ event }) => {
+        if (frozen.current) return;
         setToolCalls((prev) => ({
           ...prev,
           [event.toolCallId]: { name: event.toolCallName, argsText: "", status: "running" },
-        })),
-      onToolCallArgsEvent: ({ event }) =>
+        }));
+      },
+      onToolCallArgsEvent: ({ event }) => {
+        if (frozen.current) return;
         setToolCalls((prev) => {
           const entry = prev[event.toolCallId];
           if (!entry) return prev;
@@ -249,14 +278,17 @@ export function ApprovalCard() {
             ...prev,
             [event.toolCallId]: { ...entry, argsText: entry.argsText + (event.delta ?? "") },
           };
-        }),
-      onToolCallResultEvent: ({ event }) =>
+        });
+      },
+      onToolCallResultEvent: ({ event }) => {
+        if (frozen.current) return;
         setToolCalls((prev) => {
           const entry = prev[event.toolCallId];
           if (!entry) return prev;
           const failed = /timed out|error|fail/i.test(String(event.content ?? ""));
           return { ...prev, [event.toolCallId]: { ...entry, status: failed ? "failed" : "ok" } };
-        }),
+        });
+      },
     });
     return () => sub.unsubscribe();
   }, [agent, isReady]);

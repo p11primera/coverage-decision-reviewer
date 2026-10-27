@@ -18,9 +18,11 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { UseAgentUpdate, useAgent } from "@copilotkit/react-core/v2";
+
+import { subscribeRunCancelled } from "@/lib/cancelBus";
 
 interface ProgressValue {
   checked?: number;
@@ -34,12 +36,26 @@ export function ProgressBar() {
     updates: [UseAgentUpdate.OnRunStatusChanged],
   });
   const [progress, setProgress] = useState<ProgressValue | null>(null);
+  // M3A freeze latch (mirrors ApprovalCard): after an accepted cancel the bar holds its
+  // last values instead of following trailing frames from the dying stream; the next run
+  // start unfreezes. WHY lib/cancelBus and not a subscriber: a cancelled run ends with a
+  // bare RUN_FINISHED (pydantic-ai _event_stream.py:231-238), indistinguishable from
+  // success on the wire — only the component whose cancel fetch returned 200 knows.
+  const frozen = useRef(false);
+
+  useEffect(() => subscribeRunCancelled(() => {
+    frozen.current = true;
+  }), []);
 
   useEffect(() => {
     if (!isReady) return;
     const sub = agent.subscribe({
-      onRunStartedEvent: () => setProgress(null),
+      onRunStartedEvent: () => {
+        frozen.current = false;
+        setProgress(null);
+      },
       onCustomEvent: ({ event }) => {
+        if (frozen.current) return;
         if (event.name === "review_progress") {
           setProgress(event.value as ProgressValue);
         }

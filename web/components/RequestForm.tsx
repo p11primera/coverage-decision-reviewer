@@ -11,6 +11,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { UseAgentUpdate, useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
+import { publishRunCancelled } from "@/lib/cancelBus";
 import { newId } from "@/lib/id";
 import { loadDraft, saveDraft } from "@/lib/draftStore";
 
@@ -35,9 +36,32 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cancelState, setCancelState] = useState<"idle" | "pending" | "cancelled" | "not_found">("idle");
   const draftLoaded = useRef(false);
+  // Set when a cancel was accepted: the agent gets a FRESH threadId immediately (so the
+  // next submit cannot resume the half-persisted cancelled thread), but messages/state
+  // wipe only AFTER the dying run's stream closes (in runAgent's finally) — clearing
+  // mid-stream would yank message ids out from under trailing events the agent still
+  // applies (AbstractAgent.apply, web/node_modules/@ag-ui/client/dist/index.d.ts:596).
+  const freshThreadPending = useRef(false);
 
+  // M3A concurrency guard: submit is blocked while a run is live OR an approval
+  // interrupt is still pending (agent.pendingInterrupts,
+  // web/node_modules/@ag-ui/client/dist/index.d.ts:545 — populated on RUN_FINISHED with
+  // outcome.type==="interrupt", cleared by the next successful run). The observed defect
+  // this closes: submitting during a mid-resume approval raced two runs and left the old
+  // propose_decision chip stuck. aria-disabled + explanatory title (not a dead native
+  // `disabled`) keeps the button focusable and screen-reader-visible with its reason.
+  const interruptPending = agent.pendingInterrupts.length > 0;
   const running = busy || agent.isRunning;
+  const blocked = !isReady || running || interruptPending;
+  const blockedReason = !isReady
+    ? "Connecting to the agent runtime…"
+    : running
+      ? "A review is already running — use Cancel to stop it"
+      : interruptPending
+        ? "Finish or cancel the current review first"
+        : undefined;
 
   // Restore-once on mount (M1.1 continuity): a page navigation used to unmount this island and
   // with it the browser-side agent singleton, so the remount minted a fresh random threadId
@@ -72,8 +96,9 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!isReady || running) return;
+    if (blocked) return; // guard (button is aria-disabled; Enter-in-field must not bypass)
     setError(null);
+    setCancelState("idle");
     agent.addMessage({
       id: newId(), // LAN-IP (non-secure-context) safe: see lib/id.ts
       role: "user",
@@ -86,6 +111,41 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
       setBusy(false);
+      if (freshThreadPending.current) {
+        // The cancelled stream has closed (this finally runs after its onFinalize), so the
+        // wipe is safe now; the fresh threadId was already minted at cancel time.
+        freshThreadPending.current = false;
+        agent.setMessages([]);
+        agent.setState({});
+      }
+    }
+  }
+
+  async function onCancel() {
+    if (cancelState === "pending") return;
+    setCancelState("pending");
+    try {
+      // BFF route (no direct browser→FastAPI): web/app/api/cancel/[threadId]/route.ts.
+      const res = await fetch(`/api/cancel/${encodeURIComponent(agent.threadId)}`, {
+        method: "POST",
+        cache: "no-store",
+      });
+      if (res.ok) {
+        setCancelState("cancelled");
+        publishRunCancelled(); // freeze tool-activity chips + progress bar islands
+        freshThreadPending.current = true;
+        agent.threadId = newId(); // next submit = fresh run; backend history is per-thread
+      } else if (res.status === 404) {
+        // Backend registry already popped the token (run finished/interrupted first).
+        setCancelState("not_found");
+      } else {
+        const body = (await res.json().catch(() => null)) as { message?: string } | null;
+        setError(body?.message ?? `Cancel failed (${res.status})`);
+        setCancelState("idle");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+      setCancelState("idle");
     }
   }
 
@@ -131,13 +191,50 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
           />
         </label>
       </div>
-      <button
-        type="submit"
-        disabled={!isReady || running}
-        className="mt-4 rounded bg-blue-800 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
-      >
-        {running ? "Review running…" : isReady ? "Submit for review" : "Connecting…"}
-      </button>
+      <div className="mt-4 flex items-center gap-3">
+        <button
+          type="submit"
+          aria-disabled={blocked ? "true" : undefined}
+          title={blocked ? blockedReason : undefined}
+          aria-describedby={blocked ? "submit-blocked-reason" : undefined}
+          data-testid="submit-button"
+          className={`mt-0 rounded px-4 py-2 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 ${
+            blocked
+              ? "cursor-not-allowed bg-blue-800/50"
+              : "bg-blue-800 hover:bg-blue-900"
+          }`}
+        >
+          {running ? "Review running…" : isReady ? "Submit for review" : "Connecting…"}
+        </button>
+        {running ? (
+          // M3A Cancel: only reachable while a run is live. Real <button> (keyboard +
+          // focus ring), AA contrast (white on red-800), announces via cancelState below.
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={cancelState === "pending"}
+            data-testid="cancel-button"
+            className="rounded bg-red-800 px-4 py-2 text-sm font-semibold text-white hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+          >
+            {cancelState === "pending" ? "Cancelling…" : "Cancel run"}
+          </button>
+        ) : null}
+      </div>
+      {blocked && isReady && blockedReason ? (
+        <p id="submit-blocked-reason" className="mt-2 text-xs text-slate-600">
+          {blockedReason}
+        </p>
+      ) : null}
+      {cancelState === "cancelled" ? (
+        <p role="status" className="mt-3 rounded border border-green-300 bg-green-50 p-2 text-sm font-medium text-green-900">
+          Run cancelled — history saved; you can start a new review
+        </p>
+      ) : null}
+      {cancelState === "not_found" ? (
+        <p role="status" className="mt-3 rounded border border-amber-300 bg-amber-50 p-2 text-sm font-medium text-amber-900">
+          No active run to cancel.
+        </p>
+      ) : null}
       {error ? (
         <p role="alert" className="mt-3 rounded border border-red-300 bg-red-50 p-2 text-sm text-red-900">
           {error}

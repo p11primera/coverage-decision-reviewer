@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 
 import { ApprovalCard } from "@/components/ApprovalCard";
 import { AuditDrawer } from "@/components/AuditDrawer";
+import { ConnectionStatus } from "@/components/ConnectionStatus";
 import { ProgressBar } from "@/components/ProgressBar";
 import { RequestForm } from "@/components/RequestForm";
 import { ReviewerProvider } from "@/components/ReviewerProvider";
@@ -28,13 +29,21 @@ export default async function ReviewerPage() {
   if (!reviewer) redirect("/login");
 
   return (
-    <main className="mx-auto max-w-6xl p-6">
-      <header className="flex items-baseline justify-between border-b border-slate-300 pb-3">
-        <h1 className="text-xl font-bold text-slate-900">Coverage Decision Reviewer</h1>
-        <nav className="flex items-center gap-4 text-sm" aria-label="Primary">
-          <span className="text-slate-700">
-            Signed in as <span className="font-semibold">{reviewer}</span>
-          </span>
+    // M3A: the provider moved to wrap the whole <main> (was: grid only) because the
+    // ConnectionStatus pill lives in the header and reads the same shared agent instance.
+    // The shell above (auth + layout) still renders on the server; hydration cost is the
+    // same set of islands, just one level higher.
+    <ReviewerProvider>
+      <main className="mx-auto max-w-6xl p-6">
+        <header className="flex items-baseline justify-between border-b border-slate-300 pb-3">
+          <h1 className="text-xl font-bold text-slate-900">Coverage Decision Reviewer</h1>
+          <nav className="flex items-center gap-4 text-sm" aria-label="Primary">
+            <span className="text-slate-700">
+              {/* M3A: live connection pill (client island) beside the reviewer name —
+                  connected / streaming / failed, driven by the agent subscription. */}
+              Signed in as <span className="font-semibold">{reviewer}</span>{" "}
+              <ConnectionStatus />
+            </span>
           {/* M1.1: the drawer (client island) replaces the old <Link href="/audit"> — a page
               navigation here used to unmount every island below and kill the live agent
               instance. /audit remains reachable as a server-rendered deep link by URL. */}
@@ -45,12 +54,11 @@ export default async function ReviewerPage() {
           >
             Switch reviewer
           </Link>
-        </nav>
-      </header>
-      {/* One CopilotKit provider for the whole island set: all islands share the same
-          browser-side agent instance (same agentId) so the stream/state/progress/approval
-          views stay coherent during a run. */}
-      <ReviewerProvider>
+          </nav>
+        </header>
+        {/* One CopilotKit provider for the whole island set: all islands share the same
+            browser-side agent instance (same agentId) so the stream/state/progress/approval
+            views — and the header status pill — stay coherent during a run. */}
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
           <div className="space-y-4">
             <RequestForm reviewer={reviewer} />
@@ -62,7 +70,7 @@ export default async function ReviewerPage() {
             <StatePanel />
           </div>
         </div>
-      </ReviewerProvider>
-    </main>
+      </main>
+    </ReviewerProvider>
   );
 }

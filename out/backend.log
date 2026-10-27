@@ -1,9 +1,9 @@
-INFO:     Started server process [118166]
+INFO:     Started server process [128763]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8100 (Press CTRL+C to quit)
-INFO:     127.0.0.1:52960 - "GET /healthz HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55754 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52260 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41018 - "POST /agent HTTP/1.1" 200 OK
                  pydantic-ai v2.61.0 • Python 3.12.16
 
       / \        agent: coverage_reviewer • model: openai:nvidia/Qwen3.8-Flash-Next-FP4-Local
@@ -14,14 +14,4 @@ INFO:     127.0.0.1:55754 - "POST /agent HTTP/1.1" 200 OK
 `---.._|_..---'    or use any OpenTelemetry backend: https://pydantic.dev/docs/ai/logfire/#otel
 
                  goes away once observability is on — or PYDANTIC_AI_NO_BANNER=1
-INFO:     127.0.0.1:48180 - "POST /agent HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55222 - "POST /agent HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35172 - "POST /agent HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37294 - "POST /agent HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60302 - "GET /healthz HTTP/1.1" 200 OK
-INFO:     127.0.0.1:48626 - "POST /agent HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44956 - "GET /healthz HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44680 - "GET /healthz HTTP/1.1" 200 OK
-INFO:     127.0.0.1:56000 - "GET /healthz HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47418 - "POST /agent HTTP/1.1" 200 OK
-INFO:     127.0.0.1:41522 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46064 - "POST /agent HTTP/1.1" 200 OK

@@ -1,0 +1,39 @@
+npm notice run web@0.1.0 build
+npm notice run next build --turbopack
+   ▲ Next.js 15.5.28 (Turbopack)
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Finished writing to disk in 2.0s
+ ✓ Compiled successfully in 2.6min
+   Linting and checking validity of types ...
+   Collecting page data ...
+[CopilotKit Runtime] telemetry enabled — see https://docs.copilotkit.ai/telemetry to opt out (set COPILOTKIT_TELEMETRY_DISABLED=true).
+   Generating static pages (0/5) ...
+   Generating static pages (1/5) 
+   Generating static pages (2/5) 
+   Generating static pages (3/5) 
+ ✓ Generating static pages (5/5)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                         Size  First Load JS
+┌ ƒ /                             840 kB         956 kB
+├ ○ /_not-found                      0 B         116 kB
+├ ƒ /api/audit                       0 B            0 B
+├ ƒ /api/cancel/[threadId]           0 B            0 B
+├ ƒ /api/copilotkit/[...path]        0 B            0 B
+├ ƒ /api/login                       0 B            0 B
+├ ƒ /api/policies/[id]               0 B            0 B
+├ ƒ /audit                       3.44 kB         119 kB
+└ ƒ /login                          1 kB         117 kB
++ First Load JS shared by all     123 kB
+  ├ chunks/650bde58cbcff5d6.js   17.3 kB
+  ├ chunks/b77857459aa55cba.js   14.7 kB
+  ├ chunks/f4178b3f4d4505d4.js   59.2 kB
+  └ other shared chunks (total)    32 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

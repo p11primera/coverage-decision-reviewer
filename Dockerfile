@@ -15,10 +15,15 @@ RUN uv sync --frozen --no-dev
 COPY backend ./backend
 COPY scripts ./scripts
 
-RUN useradd -m appuser && mkdir -p /app/data && chown -R appuser:appuser /app
+# /data is the compose named-volume mount (hermes-data); pre-creating + chowning it in
+# the image makes Docker seed the fresh volume with appuser ownership (HistoryStore
+# mkdirs the parent at startup, but only as appuser).
+RUN useradd -m appuser && mkdir -p /app/data /data && chown -R appuser:appuser /app /data
 USER appuser
 
 ENV PATH="/app/.venv/bin:$PATH" \
+    NEXT_TELEMETRY_DISABLED=1 \
+    COPILOTKIT_TELEMETRY_DISABLED=true \
     DATABASE_PATH=/app/data/reviewer.db \
     LLM_BASE_URL=http://spark.chat:8000/v1 \
     LLM_MODEL=nvidia/Qwen3.8-Flash-Next-FP4-Local \
