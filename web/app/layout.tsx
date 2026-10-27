@@ -34,8 +34,8 @@ export default function RootLayout({
         <footer className="mt-10 border-t border-slate-300 py-6">
           <div className="mx-auto max-w-6xl px-6">
             <p className="text-xs leading-5 text-slate-600">
-              Independent engineering proof of concept. Not an Evolent Health product and not
-              affiliated with, endorsed by, or sponsored by Evolent Health, Inc.
+              Unofficial proof of concept. Not affiliated with or endorsed by Evolent Health.
+              All trademarks are the property of their respective owners.
             </p>
           </div>
         </footer>
