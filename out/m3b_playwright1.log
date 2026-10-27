@@ -1,0 +1,10 @@
+npm notice run web@0.1.0 npx
+npm notice run 'playwright' test
+
+Running 3 tests using 1 worker
+
+  ✓  1 [chromium] › e2e/cancel.spec.ts:6:7 › cancel mid-run › cancel -> 'history saved' status + submit re-enabled (5.8s)
+  ✓  2 [chromium] › e2e/deny.spec.ts:9:7 › deny requires rationale › interrupt -> Deny gated on rationale -> audit row decision=deny with rationale (32.0s)
+  ✓  3 [chromium] › e2e/golden.spec.ts:6:7 › golden path › submit -> narrative -> tool chips ok -> interrupt -> approve -> RECOMMENDATION approve -> audit row (31.0s)
+
+  3 passed (1.3m)

@@ -1,0 +1,8 @@
+npm notice run web@0.1.0 npx
+npm notice run 'playwright' test e2e/golden.spec.ts
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › e2e/golden.spec.ts:6:7 › golden path › submit -> narrative -> tool chips ok -> interrupt -> approve -> RECOMMENDATION approve -> audit row (30.6s)
+
+  1 passed (42.0s)

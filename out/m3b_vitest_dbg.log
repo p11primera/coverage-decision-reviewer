@@ -1,0 +1,13 @@
+npm notice run web@0.1.0 npx
+npm notice run 'vitest' run tests/ApprovalCard.test.tsx -t editedArgs
+
+ RUN  v3.2.7 /opt/data/workspace/evolent/coverage-reviewer/web
+
+ ✓ tests/ApprovalCard.test.tsx (7 tests | 6 skipped) 1031ms
+   ✓ ApprovalCard (interrupt card) > includes editedArgs in the approve payload when edited args were saved as valid JSON  1026ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 6 skipped (7)
+   Start at  15:57:08
+   Duration  5.65s (transform 392ms, setup 633ms, collect 456ms, tests 1.03s, environment 2.55s, prepare 279ms)
+

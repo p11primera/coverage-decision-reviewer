@@ -73,7 +73,10 @@ export function StatePanel() {
         </div>
         <div>
           <dt className="text-xs font-medium uppercase text-slate-500">Risk score</dt>
-          <dd>{state.risk_score ?? "—"}</dd>
+          {/* M3B: an unavailable flaky scorer sets risk_score='unavailable' server-side;
+              render that sentinel verbatim (not "—", which would misread as "no data yet"
+              — the distinction reviewers must see, see README known limitations). */}
+          <dd>{state.risk_score === "unavailable" ? "unavailable" : (state.risk_score ?? "—")}</dd>
         </div>
         <div>
           <dt className="text-xs font-medium uppercase text-slate-500">Recommendation</dt>

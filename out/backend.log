@@ -15,3 +15,21 @@ INFO:     127.0.0.1:41018 - "POST /agent HTTP/1.1" 200 OK
 
                  goes away once observability is on — or PYDANTIC_AI_NO_BANNER=1
 INFO:     127.0.0.1:46064 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57800 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43230 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49578 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49582 - "POST /cancel/274dd71f-6020-43ea-bf8f-86870b3b3095 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41530 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41530 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42428 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35684 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60064 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32844 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58514 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58514 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38112 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38128 - "POST /cancel/e01235e9-4d23-42d5-9bb3-7a33f4342a58 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36640 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36640 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54266 - "POST /agent HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46786 - "POST /agent HTTP/1.1" 200 OK

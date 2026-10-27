@@ -1,0 +1,388 @@
+npm notice run web@0.1.0 test
+npm notice run vitest run
+
+ RUN  v3.2.7 /opt/data/workspace/evolent/coverage-reviewer/web
+
+ ✓ tests/StatePanel.test.tsx (3 tests) 1105ms
+   ✓ StatePanel > handles missing initial state gracefully (no crash, em-dash placeholders)  932ms
+ ✓ tests/ProgressBar.test.tsx (4 tests) 1241ms
+   ✓ ProgressBar (CUSTOM review_progress events) > handles a missing initial state gracefully (delta-before-snapshot guard)  951ms
+ ❯ tests/ApprovalCard.test.tsx (7 tests | 1 failed) 3542ms
+   ✓ ApprovalCard (interrupt card) > renders the card region with accessible labels  1158ms
+   ✓ ApprovalCard (interrupt card) > keeps Deny disabled until a non-empty rationale is typed (whitespace does not count)  816ms
+   ✓ ApprovalCard (interrupt card) > approves with payload {approved:true} and preserves the interrupt id 136ms
+   × ApprovalCard (interrupt card) > includes editedArgs in the approve payload when edited args were saved as valid JSON 428ms
+     → Unable to find an element with the text: Edited args staged for approve.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Approval and tool activity"[39m
+      [33mclass[39m=[32m"rounded-lg border border-slate-300 bg-white p-4 shadow-sm"[39m
+    [36m>[39m
+      [36m<h2[39m
+        [33mclass[39m=[32m"text-sm font-semibold uppercase tracking-wide text-slate-700"[39m
+      [36m>[39m
+        [0mTool activity[0m
+      [36m</h2>[39m
+      [36m<ul[39m
+        [33mclass[39m=[32m"mt-2 flex flex-wrap gap-2"[39m
+      [36m>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"text-xs text-slate-500"[39m
+        [36m>[39m
+          [0mNo tool calls yet this run.[0m
+        [36m</li>[39m
+      [36m</ul>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"mt-4"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"rounded-lg border-2 border-amber-500 bg-amber-50 p-4"[39m
+        [36m>[39m
+          [36m<h3[39m
+            [33mclass[39m=[32m"text-sm font-bold text-slate-900"[39m
+          [36m>[39m
+            [0mApproval required — propose_decision[0m
+          [36m</h3>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-1 text-xs text-slate-700"[39m
+          [36m>[39m
+            [0mTool call [0m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-mono"[39m
+            [36m>[39m
+              [0mcall-1[0m
+            [36m</span>[39m
+          [36m</p>[39m
+          [36m<dl[39m
+            [33mclass[39m=[32m"mt-3 space-y-2 text-sm text-slate-900"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<dt[39m
+                [33mclass[39m=[32m"text-xs font-semibold uppercase text-slate-600"[39m
+              [36m>[39m
+                [0mProposed decision[0m
+              [36m</dt>[39m
+              [36m<dd[39m
+                [33mclass[39m=[32m"font-semibold"[39m
+              [36m>[39m
+                [0m—[0m
+              [36m</dd>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<dt[39m
+                [33mclass[39m=[32m"text-xs font-semibold uppercase text-slate-600"[39m
+              [36m>[39m
+                [0mAgent rationale[0m
+              [36m</dt>[39m
+              [36m<dd>[39m
+                [0m—[0m
+              [36m</dd>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<dt[39m
+                [33mclass[39m=[32m"text-xs font-semibold uppercase text-slate-600"[39m
+              [36m>[39m
+                [0mCited policy IDs[0m
+              [36m</dt>[39m
+              [36m<dd[39m
+                [33mclass[39m=[32m"flex flex-wrap gap-1"[39m
+              [36m/>[39m
+            [36m</div>[39m
+          [36m</dl>[39m
+          [36m<label[39m
+            [33mclass[39m=[32m"mt-4 block text-sm text-slate-900"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mReviewer rationale[0m
+              [0m [0m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-xs text-slate-600"[39m
+              [36m>[39m
+                [0m(required to deny, recorded in the audit)[0m
+              [36m</span>[39m
+            [36m</span>[39m
+            [36m<textarea[39m
+              [33maria-required[39m=[32m"true"[39m
+              [33mclass[39m=[32m"mt-1 w-full rounded border border-slate-400 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"[39m
+              [33mrequired[39m=[32m""[39m
+              [33mrows[39m=[32m"2"[39m
+            [36m/>[39m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-2"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33mclass[39m=[32m"rounded border border-slate-400 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mHide args editor[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-2"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"block text-sm text-slate-900"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"font-medium"[39m
+              [36m>[39m
+                [0mProposed args (JSON)[0m
+              [36m</span>[39m
+              [36m<textarea[39m
+                [33maria-invalid[39m=[32m"true"[39m
+                [33mclass[39m=[32m"mt-1 w-full rounded border border-slate-400 bg-white p-2 font-mono text-xs text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"[39m
+                [33mrows[39m=[32m"6"[39m
+              [36m>[39m
+                [0m{"decision": "deny", "rationale": "edited"}[0m
+              [36m</textarea>[39m
+            [36m</label>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"mt-1 text-xs text-red-800"[39m
+              [33mrole[39m=[32m"alert"[39m
+            [36m>[39m
+              [0mInvalid JSON — fix before saving.[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"mt-1 rounded bg-slate-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700"[39m
+              [33mdisabled[39m=[32m""[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mSave edited args[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-4 flex gap-2"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"rounded bg-green-800 px-4 py-2 text-sm font-semibold text-white hover:bg-green-900 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mApprove[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"rounded bg-red-800 px-4 py-2 text-sm font-semibold text-white hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"[39m
+              [33mdisabled[39m=[32m""[39m
+              [33mtitle[39m=[32m"A rationale is required to deny"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mDeny[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33maria-live[39m=[32m"assertive"[39m
+            [33mclass[39m=[32m"mt-2 text-sm font-medium text-slate-900"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ✓ ApprovalCard (interrupt card) > does not save invalid JSON (save button disabled + role=alert) 294ms
+   ✓ ApprovalCard (interrupt card) > denies with payload {approved:false, reason:<rationale>}  566ms
+   ✓ ApprovalCard (interrupt card) > announces the outcome via an aria-live region after approving 133ms
+ ✓ tests/auth.test.ts (7 tests) 33ms
+ ✓ tests/toolActivityGroups.test.ts (5 tests) 41ms
+ ✓ tests/id.test.ts (2 tests) 17ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/ApprovalCard.test.tsx > ApprovalCard (interrupt card) > includes editedArgs in the approve payload when edited args were saved as valid JSON
+TestingLibraryElementError: Unable to find an element with the text: Edited args staged for approve.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-label[39m=[32m"Approval and tool activity"[39m
+      [33mclass[39m=[32m"rounded-lg border border-slate-300 bg-white p-4 shadow-sm"[39m
+    [36m>[39m
+      [36m<h2[39m
+        [33mclass[39m=[32m"text-sm font-semibold uppercase tracking-wide text-slate-700"[39m
+      [36m>[39m
+        [0mTool activity[0m
+      [36m</h2>[39m
+      [36m<ul[39m
+        [33mclass[39m=[32m"mt-2 flex flex-wrap gap-2"[39m
+      [36m>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"text-xs text-slate-500"[39m
+        [36m>[39m
+          [0mNo tool calls yet this run.[0m
+        [36m</li>[39m
+      [36m</ul>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"mt-4"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"rounded-lg border-2 border-amber-500 bg-amber-50 p-4"[39m
+        [36m>[39m
+          [36m<h3[39m
+            [33mclass[39m=[32m"text-sm font-bold text-slate-900"[39m
+          [36m>[39m
+            [0mApproval required — propose_decision[0m
+          [36m</h3>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-1 text-xs text-slate-700"[39m
+          [36m>[39m
+            [0mTool call [0m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-mono"[39m
+            [36m>[39m
+              [0mcall-1[0m
+            [36m</span>[39m
+          [36m</p>[39m
+          [36m<dl[39m
+            [33mclass[39m=[32m"mt-3 space-y-2 text-sm text-slate-900"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<dt[39m
+                [33mclass[39m=[32m"text-xs font-semibold uppercase text-slate-600"[39m
+              [36m>[39m
+                [0mProposed decision[0m
+              [36m</dt>[39m
+              [36m<dd[39m
+                [33mclass[39m=[32m"font-semibold"[39m
+              [36m>[39m
+                [0m—[0m
+              [36m</dd>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<dt[39m
+                [33mclass[39m=[32m"text-xs font-semibold uppercase text-slate-600"[39m
+              [36m>[39m
+                [0mAgent rationale[0m
+              [36m</dt>[39m
+              [36m<dd>[39m
+                [0m—[0m
+              [36m</dd>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<dt[39m
+                [33mclass[39m=[32m"text-xs font-semibold uppercase text-slate-600"[39m
+              [36m>[39m
+                [0mCited policy IDs[0m
+              [36m</dt>[39m
+              [36m<dd[39m
+                [33mclass[39m=[32m"flex flex-wrap gap-1"[39m
+              [36m/>[39m
+            [36m</div>[39m
+          [36m</dl>[39m
+          [36m<label[39m
+            [33mclass[39m=[32m"mt-4 block text-sm text-slate-900"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mReviewer rationale[0m
+              [0m [0m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-xs text-slate-600"[39m
+              [36m>[39m
+                [0m(required to deny, recorded in the audit)[0m
+              [36m</span>[39m
+            [36m</span>[39m
+            [36m<textarea[39m
+              [33maria-required[39m=[32m"true"[39m
+              [33mclass[39m=[32m"mt-1 w-full rounded border border-slate-400 bg-white p-2 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"[39m
+              [33mrequired[39m=[32m""[39m
+              [33mrows[39m=[32m"2"[39m
+            [36m/>[39m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-2"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33mclass[39m=[32m"rounded border border-slate-400 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mHide args editor[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-2"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"block text-sm text-slate-900"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"font-medium"[39m
+              [36m>[39m
+                [0mProposed args (JSON)[0m
+              [36m</span>[39m
+              [36m<textarea[39m
+                [33maria-invalid[39m=[32m"true"[39m
+                [33mclass[39m=[32m"mt-1 w-full rounded border border-slate-400 bg-white p-2 font-mono text-xs text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"[39m
+                [33mrows[39m=[32m"6"[39m
+              [36m>[39m
+                [0m{"decision": "deny", "rationale": "edited"}[0m
+              [36m</textarea>[39m
+            [36m</label>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"mt-1 text-xs text-red-800"[39m
+              [33mrole[39m=[32m"alert"[39m
+            [36m>[39m
+              [0mInvalid JSON — fix before saving.[0m
+            [36m</p>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"mt-1 rounded bg-slate-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700"[39m
+              [33mdisabled[39m=[32m""[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mSave edited args[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-4 flex gap-2"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"rounded bg-green-800 px-4 py-2 text-sm font-semibold text-white hover:bg-green-900 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mApprove[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"rounded bg-red-800 px-4 py-2 text-sm font-semibold text-white hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"[39m
+              [33mdisabled[39m=[32m""[39m
+              [33mtitle[39m=[32m"A rationale is required to deny"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0mDeny[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33maria-live[39m=[32m"assertive"[39m
+            [33mclass[39m=[32m"mt-2 text-sm font-medium text-slate-900"[39m
+          [36m/>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/ApprovalCard.test.tsx:93:19
+     91|     await user.paste('{"decision": "deny", "rationale": "edited"}');
+     92|     await user.click(screen.getByRole("button", { name: "Save edited a…
+     93|     expect(screen.getByText("Edited args staged for approve.")).toBeIn…
+       |                   ^
+     94| 
+     95|     await user.click(screen.getByRole("button", { name: "Approve" }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 27 passed (28)
+   Start at  15:55:39
+   Duration  14.69s (transform 1.19s, setup 5.23s, collect 1.54s, tests 5.98s, environment 20.79s, prepare 2.36s)
+
