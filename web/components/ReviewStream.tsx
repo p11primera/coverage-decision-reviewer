@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 
 import { UseAgentUpdate, useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 
+import { loadDraft } from "@/lib/draftStore";
+
 interface PolicyDetail {
   id: string;
   title: string;
@@ -87,13 +89,21 @@ function withCitations(text: string) {
   );
 }
 
-export function ReviewStream() {
+export function ReviewStream({ reviewer }: { reviewer: string }) {
   const { copilotkit } = useCopilotKit();
   const { agent, isReady } = useAgent({
     agentId: "reviewer",
     updates: [UseAgentUpdate.OnMessagesChanged, UseAgentUpdate.OnRunStatusChanged],
   });
   const [streamError, setStreamError] = useState<string | null>(null);
+  // M1.1 honesty rule: a remount re-adopts the persisted threadId (RequestForm) but must NOT
+  // fake-restore the narrative — the streamed text lived only in the unmounted agent, and
+  // re-reading it from history would prettify a state that is genuinely empty. So the pane
+  // stays in its honest empty state and merely points at the audit trail for the prior run.
+  const [restoredThreadId, setRestoredThreadId] = useState<string | null>(null);
+  useEffect(() => {
+    setRestoredThreadId(loadDraft(reviewer)?.threadId ?? null);
+  }, [reviewer]);
 
   useEffect(() => {
     if (!isReady) return;
@@ -136,9 +146,16 @@ export function ReviewStream() {
           {withCitations(narrative)}
         </p>
       ) : (
-        <p className="mt-3 text-sm text-slate-500">
-          {running ? "Streaming…" : "No narrative yet — submit a request to start the review."}
-        </p>
+        <>
+          <p className="mt-3 text-sm text-slate-500">
+            {running ? "Streaming…" : "No narrative yet — submit a request to start the review."}
+          </p>
+          {!running && restoredThreadId !== null && agent.messages.length === 0 ? (
+            <p className="mt-2 text-xs italic text-slate-600">
+              Previous run for this thread is in the audit trail.
+            </p>
+          ) : null}
+        </>
       )}
       {streamError ? (
         <div

@@ -8,19 +8,21 @@
 
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { UseAgentUpdate, useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { newId } from "@/lib/id";
+import { loadDraft, saveDraft } from "@/lib/draftStore";
 
 const DEFAULT_CPT = "72148"; // fixtures/coverage_rules.json has rules for it
 
-export function RequestForm() {
+export function RequestForm({ reviewer }: { reviewer: string }) {
   const { copilotkit } = useCopilotKit();
   const { agent, isReady } = useAgent({
     agentId: "reviewer",
     updates: [UseAgentUpdate.OnRunStatusChanged],
   });
+  const [restored, setRestored] = useState(false);
   const [patientSummary, setPatientSummary] = useState(
     "52-year-old male with 8 weeks of progressive low back pain radiating to the left leg, " +
       "worsening foot drop, and saddle numbness. History of treated renal cell carcinoma.",
@@ -33,8 +35,40 @@ export function RequestForm() {
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const draftLoaded = useRef(false);
 
   const running = busy || agent.isRunning;
+
+  // Restore-once on mount (M1.1 continuity): a page navigation used to unmount this island and
+  // with it the browser-side agent singleton, so the remount minted a fresh random threadId
+  // (@ag-ui/client AbstractAgent constructor) and the reviewer lost their thread. We re-adopt
+  // the persisted threadId — SAFE before any run (empty messages, not running) because the M0
+  // backend owns history keyed by threadId, so continuing the same thread is exactly right —
+  // and refill the unsent form fields. Writing threadId on the shared agent is deliberate here
+  // (the useAgent doc-comment warns only about per-HOOK threadIds clobbering each other; every
+  // island on this page intentionally shares one agent + one thread).
+  useEffect(() => {
+    if (draftLoaded.current) return;
+    draftLoaded.current = true;
+    const draft = loadDraft(reviewer);
+    if (draft) {
+      setPatientSummary(draft.patientSummary);
+      setCpt(draft.cpt);
+      setNotes(draft.notes);
+      if (!agent.isRunning && agent.messages.length === 0) {
+        agent.threadId = draft.threadId;
+      }
+    }
+    setRestored(true); // even with no draft: unblocks the persist effect below
+  }, [agent, reviewer]);
+
+  // Persist every keystroke + the live threadId, keyed per signed-in reviewer (server-verified
+  // name passed from the shell, so drafts never cross reviewers). Gate on `restored` so the
+  // mount pass cannot clobber a stored draft with defaults before the restore has run.
+  useEffect(() => {
+    if (!restored || !isReady) return;
+    saveDraft(reviewer, { threadId: agent.threadId, patientSummary, cpt, notes });
+  }, [restored, isReady, reviewer, agent, patientSummary, cpt, notes]);
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();

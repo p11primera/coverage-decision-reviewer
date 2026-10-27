@@ -8,6 +8,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { ApprovalCard } from "@/components/ApprovalCard";
+import { AuditDrawer } from "@/components/AuditDrawer";
 import { ProgressBar } from "@/components/ProgressBar";
 import { RequestForm } from "@/components/RequestForm";
 import { ReviewerProvider } from "@/components/ReviewerProvider";
@@ -34,12 +35,10 @@ export default async function ReviewerPage() {
           <span className="text-slate-700">
             Signed in as <span className="font-semibold">{reviewer}</span>
           </span>
-          <Link
-            href="/audit"
-            className="text-blue-800 underline hover:text-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
-          >
-            Audit trail
-          </Link>
+          {/* M1.1: the drawer (client island) replaces the old <Link href="/audit"> — a page
+              navigation here used to unmount every island below and kill the live agent
+              instance. /audit remains reachable as a server-rendered deep link by URL. */}
+          <AuditDrawer />
           <Link
             href="/login?switch=1"
             className="text-blue-800 underline hover:text-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
@@ -54,8 +53,8 @@ export default async function ReviewerPage() {
       <ReviewerProvider>
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
           <div className="space-y-4">
-            <RequestForm />
-            <ReviewStream />
+            <RequestForm reviewer={reviewer} />
+            <ReviewStream reviewer={reviewer} />
             <ApprovalCard />
           </div>
           <div className="space-y-4">

@@ -2,6 +2,17 @@
 // straight from the append-only SQLite audit table (read-only via node:sqlite — see
 // lib/audit.ts for the driver rationale). No "use client" anywhere in this tree: the page
 // is static HTML per request, which is the point of the Server/Client split in this app.
+//
+// M1.1 drawer-vs-page split (Server/Client boundary decision): the header "Audit trail"
+// control on / no longer navigates here — it opens the client-side AuditDrawer (components/
+// AuditDrawer.tsx) whose rows come from the authenticated BFF route app/api/audit, because a
+// full navigation unmounts every client island and with them the live CopilotKit agent
+// instance (ReviewerProvider/ReviewStream/ApprovalCard/StatePanel/ProgressBar) mid-review.
+// This page is kept EXACTLY as-is as the server-rendered, zero-JS, deep-linkable showcase —
+// it is now reached only by direct URL (e.g. sharing a permalink or auditing from another
+// tab), which is precisely where a fresh server render is the right tool and no client state
+// exists to lose. The two surfaces share one read path (lib/audit.ts) so rows never diverge;
+// the "Back to review" link stays for direct-URL visitors.
 
 import { cookies } from "next/headers";
 import Link from "next/link";
