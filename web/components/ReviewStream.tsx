@@ -51,7 +51,7 @@ function CitationChip({ policyId }: { policyId: string }) {
         onKeyDown={(e) => {
           if (e.key === "Escape") setOpen(false);
         }}
-        className="rounded bg-indigo-100 px-1.5 py-0.5 font-mono text-xs font-semibold text-indigo-900 hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+        className="rounded bg-purple-100 px-1.5 py-0.5 font-mono text-xs font-semibold text-purple-900 hover:bg-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
       >
         {policyId}
       </button>

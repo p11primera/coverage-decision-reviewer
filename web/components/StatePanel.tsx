@@ -111,7 +111,7 @@ export function StatePanel() {
             {(state.citations ?? []).map((c) => (
               <li
                 key={c}
-                className="rounded bg-indigo-100 px-1.5 py-0.5 font-mono text-xs text-indigo-900"
+                className="rounded bg-purple-100 px-1.5 py-0.5 font-mono text-xs text-purple-900"
               >
                 {c}
               </li>
