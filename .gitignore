@@ -32,3 +32,5 @@ out/*.png
 out/cookies*.txt
 out/orch_*
 out/audit_api_*.json
+web/*.log
+web/*.pid
