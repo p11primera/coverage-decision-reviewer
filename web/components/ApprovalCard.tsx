@@ -27,13 +27,11 @@ import {
   type Interrupt,
 } from "@copilotkit/react-core/v2";
 
-type ToolCallStatus = "running" | "ok" | "failed";
-
-interface ToolCallView {
-  name: string;
-  argsText: string;
-  status: ToolCallStatus;
-}
+import {
+  groupConsecutiveAttempts,
+  type ToolCallStatus,
+  type ToolCallView,
+} from "./toolActivityGroups";
 
 interface ProposedArgs {
   decision?: string;
@@ -287,18 +285,53 @@ export function ApprovalCard() {
       <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
         Tool activity
       </h2>
+      {/* WHY per-call rows are preserved (not merged): the toolCallId-keyed map is a
+          trace-isomorphic record of every real tool call against the server history, so
+          retry attempts stay individually auditable. Grouping consecutive same-name calls
+          below is purely cosmetic (derived at render via groupConsecutiveAttempts); the
+          state map and every resume/approval code path are untouched. */}
       <ul className="mt-2 flex flex-wrap gap-2">
-        {Object.entries(toolCalls).map(([id, t]) => (
-          <li
-            key={id}
-            className="flex items-center gap-1.5 rounded-full border border-slate-300 bg-slate-50 px-2 py-1 text-xs text-slate-800"
-          >
-            <span className="font-mono font-semibold">{t.name}</span>
-            <span className={`rounded-full px-1.5 py-0.5 font-semibold ${STATUS_CHIP[t.status]}`}>
-              {t.status}
-            </span>
-          </li>
-        ))}
+        {groupConsecutiveAttempts(
+          Object.entries(toolCalls).map(([id, t]) => ({ id, name: t.name, status: t.status })),
+        ).flatMap((group) =>
+          group.attempts.length === 1 ? (
+            <li
+              key={group.attempts[0].id}
+              className="flex items-center gap-1.5 rounded-full border border-slate-300 bg-slate-50 px-2 py-1 text-xs text-slate-800"
+            >
+              <span className="font-mono font-semibold">{group.attempts[0].name}</span>
+              <span
+                className={`rounded-full px-1.5 py-0.5 font-semibold ${STATUS_CHIP[group.attempts[0].status]}`}
+              >
+                {group.attempts[0].status}
+              </span>
+            </li>
+          ) : (
+            <li
+              key={`group-${group.attempts[0].id}`}
+              className="flex flex-col gap-1 rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs text-slate-800"
+            >
+              <span className="font-semibold">
+                <span className="font-mono">{group.name}</span>
+                <span className="ml-1 font-normal text-slate-600">
+                  ({group.attempts.length} attempts)
+                </span>
+              </span>
+              <ul className="flex flex-col gap-0.5">
+                {group.attempts.map((attempt, i) => (
+                  <li key={attempt.id} className="flex items-center gap-1.5">
+                    <span className="text-slate-600">attempt {i + 1} ·</span>
+                    <span
+                      className={`rounded-full px-1.5 py-0.5 font-semibold ${STATUS_CHIP[attempt.status]}`}
+                    >
+                      {attempt.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ),
+        )}
         {Object.keys(toolCalls).length === 0 ? (
           <li className="text-xs text-slate-500">No tool calls yet this run.</li>
         ) : null}
