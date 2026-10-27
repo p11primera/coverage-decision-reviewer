@@ -1,5 +1,7 @@
 # Coverage Decision Reviewer
 
+![web CI](https://github.com/p11primera/coverage-decision-reviewer/actions/workflows/ci.yml/badge.svg)
+
 > **Unofficial proof of concept.** Not affiliated with or endorsed by Evolent Health.
 > All trademarks are the property of their respective owners. MIT licensed — see LICENSE.
 
