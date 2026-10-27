@@ -18,7 +18,10 @@ services:
   api:
     build: .
     ports:
-      - '8100:8100'
+      # Loopback-only: the web container reaches api via docker DNS (service name), never
+      # the host publish; host-side tools (scripted runs, health checks) use localhost.
+      # 0.0.0.0 here would let any LAN peer bypass the BFF and spoof X-Reviewer-Id.
+      - '127.0.0.1:8100:8100'
     environment:
       LLM_BASE_URL: ${LLM_BASE_URL:-http://spark.chat:8000/v1}
       LLM_MODEL: ${LLM_MODEL:-nvidia/Qwen3.8-Flash-Next-FP4-Local}
