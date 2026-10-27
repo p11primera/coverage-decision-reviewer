@@ -1,0 +1,43 @@
+# CI covers the web tier only, deliberately: the backend agent's behavior is only
+# meaningful against a live LLM (a local vLLM on a DGX Spark at home), which CI does
+# not have and will not stub — a mocked-model test suite would prove nothing about the
+# SSE stream or the interrupt/resume contract. Those paths are covered locally instead:
+# 41 Vitest+RTL unit tests + 3 Playwright E2E flows (golden/cancel/deny) run against the
+# real agent, recorded in out/*_STATUS.md and README.md.
+
+name: web CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-lint-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      COPILOTKIT_TELEMETRY_DISABLED: "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install (frozen lockfile)
+        run: npm ci
+
+      - name: Unit tests (Vitest + React Testing Library)
+        run: npm run test
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Production build (typecheck gate included)
+        run: npm run build
