@@ -28,6 +28,7 @@ import {
 } from "@copilotkit/react-core/v2";
 
 import { subscribeRunCancelled } from "@/lib/cancelBus";
+import { subscribeReviewReset } from "@/lib/reviewResetBus";
 
 import {
   groupConsecutiveAttempts,
@@ -252,6 +253,14 @@ export function ApprovalCard() {
       }
       return next;
     });
+  }), []);
+
+  // "New review" wipes the finished run's chip map immediately (agent.setMessages/setState
+  // from RequestForm already drop the pending-interrupt card; this clears the local buffer
+  // that otherwise survives until the next onRunStartedEvent).
+  useEffect(() => subscribeReviewReset(() => {
+    frozen.current = false;
+    setToolCalls({});
   }), []);
 
   // TOOL_CALL_* → status chips (running → ok/failed), per @ag-ui/client AgentSubscriber

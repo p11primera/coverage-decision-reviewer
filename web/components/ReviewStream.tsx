@@ -12,6 +12,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { UseAgentUpdate, useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
+import { subscribeReviewReset } from "@/lib/reviewResetBus";
 
 import { loadDraft } from "@/lib/draftStore";
 
@@ -155,6 +156,15 @@ export function ReviewStream({ reviewer }: { reviewer: string }) {
   // they are not following and new text arrives, a pill offers the jump back down.
   const viewportRef = useRef<HTMLDivElement>(null);
   const [following, setFollowing] = useState(true);
+
+  // "New review" clears this island's run-scoped leftovers: a stale error card, the
+  // scroll-following flag (next run should auto-anchor from the top), and the draft
+  // restore hint (agent.messages is empty now — the hint would be a lie).
+  useEffect(() => subscribeReviewReset(() => {
+    setStreamError(null);
+    setFollowing(true);
+    setRestoredThreadId(null);
+  }), []);
   const lastNarrativeLength = useRef(0);
   const narrativeLength = narrative?.length ?? 0;
   useEffect(() => {

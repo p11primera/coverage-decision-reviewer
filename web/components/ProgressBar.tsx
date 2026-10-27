@@ -23,6 +23,7 @@ import { useEffect, useRef, useState } from "react";
 import { UseAgentUpdate, useAgent } from "@copilotkit/react-core/v2";
 
 import { subscribeRunCancelled } from "@/lib/cancelBus";
+import { subscribeReviewReset } from "@/lib/reviewResetBus";
 
 interface ProgressValue {
   checked?: number;
@@ -45,6 +46,12 @@ export function ProgressBar() {
 
   useEffect(() => subscribeRunCancelled(() => {
     frozen.current = true;
+  }), []);
+
+  // "New review" clears the finished run's bar immediately (rather than at next run start).
+  useEffect(() => subscribeReviewReset(() => {
+    frozen.current = false;
+    setProgress(null);
   }), []);
 
   useEffect(() => {

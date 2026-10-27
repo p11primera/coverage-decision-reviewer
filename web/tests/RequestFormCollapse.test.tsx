@@ -8,6 +8,9 @@ import { RequestForm } from "@/components/RequestForm";
 const mocks = vi.hoisted(() => ({
   runAgent: vi.fn(async () => undefined),
   addMessage: vi.fn(),
+  setMessages: vi.fn(),
+  setState: vi.fn(),
+  publishReviewReset: vi.fn(),
 }));
 
 // Thin mocks of the CopilotKit v2 headless surface (same shape the other component tests
@@ -26,8 +29,8 @@ vi.mock("@copilotkit/react-core/v2", () => ({
       pendingInterrupts: [],
       threadId: "thread-collapse-test",
       addMessage: mocks.addMessage,
-      setMessages: () => undefined,
-      setState: () => undefined,
+      setMessages: mocks.setMessages,
+      setState: mocks.setState,
       subscribe: () => ({ unsubscribe: () => undefined }),
     },
     isReady: true,
@@ -41,10 +44,14 @@ vi.mock("@/lib/draftStore", () => ({
 }));
 
 vi.mock("@/lib/cancelBus", () => ({ publishRunCancelled: () => undefined }));
+vi.mock("@/lib/reviewResetBus", () => ({ publishReviewReset: mocks.publishReviewReset }));
 
 beforeEach(() => {
   mocks.runAgent.mockClear();
   mocks.addMessage.mockClear();
+  mocks.setMessages.mockClear();
+  mocks.setState.mockClear();
+  mocks.publishReviewReset.mockClear();
 });
 
 describe("RequestForm collapse (M5)", () => {
@@ -79,5 +86,20 @@ describe("RequestForm collapse (M5)", () => {
     expect(screen.getByLabelText(/Patient summary/)).toHaveValue("");
     expect(screen.getByLabelText(/CPT/)).toHaveValue("");
     expect(screen.getByLabelText(/Clinical notes/)).toHaveValue("");
+  });
+
+  it("'New review' wipes shared agent buffers + publishes the island reset (stale-display fix)", async () => {
+    const user = userEvent.setup();
+    render(<RequestForm reviewer="Dr. Collapse" />);
+    await user.click(screen.getByTestId("submit-button"));
+    expect(mocks.publishReviewReset).not.toHaveBeenCalled(); // submit alone must NOT wipe
+
+    await user.click(screen.getByRole("button", { name: "New review" }));
+
+    // Narrative + StatePanel read these; leaving them shows the previous run's output.
+    expect(mocks.setMessages).toHaveBeenCalledWith([]);
+    expect(mocks.setState).toHaveBeenCalledWith({});
+    // Progress bar + tool chips hold LOCAL buffers only the bus can reach.
+    expect(mocks.publishReviewReset).toHaveBeenCalledTimes(1);
   });
 });

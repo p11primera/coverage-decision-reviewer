@@ -12,6 +12,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { UseAgentUpdate, useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { publishRunCancelled } from "@/lib/cancelBus";
+import { publishReviewReset } from "@/lib/reviewResetBus";
 import { newId } from "@/lib/id";
 import { loadDraft, saveDraft } from "@/lib/draftStore";
 
@@ -166,6 +167,16 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
     setNotes("");
     setError(null);
     setCancelState("idle");
+    // Full clean slate, not just a re-expanded form. The shared agent instance keeps the
+    // finished run's buffers — agent.messages feeds ReviewStream's narrative AND
+    // StatePanel's request echo; agent state holds the risk/recommendation snapshot —
+    // and without a fresh threadId the next submit would append to the finished thread
+    // (backend history is keyed per threadId). Same primitives the cancel path uses in
+    // onSubmit's finally; the local chip/progress buffers clear via the bus below.
+    agent.setMessages([]);
+    agent.setState({});
+    agent.threadId = newId();
+    publishReviewReset();
   }
 
   // M5 collapsed summary strip (post-submit): one line — truncated patient summary + CPT —
@@ -186,13 +197,18 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
             <span className="font-medium">{summary}</span>{" "}
             <span className="font-mono text-xs text-slate-600">CPT {lastSubmitted.cpt}</span>
           </p>
-          <button
-            type="button"
-            onClick={newReview}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
-          >
-            New review
-          </button>
+          {!running ? (
+            // Post-run affordance only: resetting mid-run would race the live stream
+            // (deltas would repopulate the wiped buffers). Cancel, right next to it, is
+            // the correct mid-run exit and already re-expands a clean form itself.
+            <button
+              type="button"
+              onClick={newReview}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+            >
+              New review
+            </button>
+          ) : null}
           {running ? (
             // M3A Cancel: only reachable while a run is live. Real <button> (keyboard +
             // focus ring), AA contrast (white on red-800), announces via cancelState below.
