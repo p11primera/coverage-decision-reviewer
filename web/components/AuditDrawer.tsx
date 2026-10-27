@@ -16,6 +16,25 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // browser bundle while the drawer's columns stay pinned to the server page's row shape.
 import type { AuditRow } from "@/lib/audit";
 
+/** Compact UTC display for the dense table; full ISO value stays in the cell title. */
+function fmtWhen(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  });
+}
+
+/** chatcmpl-tool-878c3342a70ad782 -> chatcmpl-tool-878c… ; full value lives in title. */
+function shortId(value: string, keep = 18): string {
+  return value.length > keep ? `${value.slice(0, keep)}…` : value;
+}
+
 export function AuditDrawer() {
   const [open, setOpen] = useState(false);
   // Slide-in flag: flip one frame AFTER mount so the CSS transform transition actually runs.
@@ -117,7 +136,7 @@ export function AuditDrawer() {
             aria-modal="true"
             aria-labelledby="audit-drawer-title"
             tabIndex={-1}
-            className={`absolute inset-y-0 right-0 flex w-full max-w-3xl transform flex-col bg-white shadow-xl transition-transform duration-200 ease-out focus:outline-none ${
+            className={`absolute inset-y-0 right-0 flex w-full max-w-[76rem] transform flex-col bg-white shadow-xl transition-transform duration-200 ease-out focus:outline-none ${
               shown ? "translate-x-0" : "translate-x-full"
             }`}
           >
@@ -157,32 +176,54 @@ export function AuditDrawer() {
               ) : rows === null || rows.length === 0 ? (
                 <p className="text-sm text-slate-600">No audit rows yet.</p>
               ) : (
+                // table-fixed + per-column widths + truncated long values (full value in
+                // the cell's title attribute) so ALL eight columns fit the drawer with no
+                // horizontal scroll at any desktop width. overflow-x stays only as the
+                // narrow-viewport fallback.
                 <div className="overflow-x-auto">
-                  <table className="w-full border-collapse text-left text-sm text-slate-900">
+                  <table className="w-full table-fixed border-collapse text-left text-xs text-slate-900">
                     <caption className="sr-only">Append-only reviewer audit trail</caption>
+                    <colgroup>
+                      <col className="w-32" />
+                      <col className="w-36" />
+                      <col className="w-28" />
+                      <col className="w-20" />
+                      <col />
+                      <col className="w-40" />
+                      <col className="w-24" />
+                      <col className="w-24" />
+                    </colgroup>
                     <thead>
-                      <tr className="bg-navy text-xs uppercase tracking-wide text-white">
+                      <tr className="bg-navy text-[11px] uppercase tracking-wide text-white">
                         <th scope="col" className="p-2">When (UTC)</th>
                         <th scope="col" className="p-2">Who (actor)</th>
                         <th scope="col" className="p-2">Action</th>
                         <th scope="col" className="p-2">Decision</th>
                         <th scope="col" className="p-2">Rationale</th>
                         <th scope="col" className="p-2">Tool call id</th>
-                        <th scope="col" className="p-2">Agent recommendation</th>
+                        <th scope="col" className="p-2">Agent rec.</th>
                         <th scope="col" className="p-2">Thread</th>
                       </tr>
                     </thead>
                     <tbody>
                       {rows.map((row) => (
                         <tr key={row.id} className="border-b border-slate-200 bg-white align-top odd:bg-slate-50">
-                          <td className="whitespace-nowrap p-2 font-mono text-xs">{row.at}</td>
-                          <td className="p-2 font-semibold">{row.actor}</td>
-                          <td className="p-2">{row.action}</td>
+                          <td className="whitespace-nowrap p-2 font-mono" title={row.at}>
+                            {fmtWhen(row.at)}
+                          </td>
+                          <td className="truncate p-2 font-semibold" title={row.actor}>{row.actor}</td>
+                          <td className="truncate p-2" title={row.action}>{row.action}</td>
                           <td className="p-2">{row.decision ?? "—"}</td>
-                          <td className="max-w-80 p-2 text-xs">{row.rationale ?? "—"}</td>
-                          <td className="p-2 font-mono text-xs">{row.tool_call_id ?? "—"}</td>
-                          <td className="p-2">{row.agent_recommendation ?? "—"}</td>
-                          <td className="p-2 font-mono text-xs">{row.thread_id}</td>
+                          <td className="truncate p-2" title={row.rationale ?? undefined}>
+                            {row.rationale ?? "—"}
+                          </td>
+                          <td className="truncate p-2 font-mono" title={row.tool_call_id ?? undefined}>
+                            {row.tool_call_id ? shortId(row.tool_call_id) : "—"}
+                          </td>
+                          <td className="truncate p-2">{row.agent_recommendation ?? "—"}</td>
+                          <td className="truncate p-2 font-mono" title={row.thread_id}>
+                            {shortId(row.thread_id, 8)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
