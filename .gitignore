@@ -13,3 +13,11 @@ web/.next/
 web/out/
 out/server.log
 out/run_*.log
+
+# M1 runtime artifacts (never commit: session cookies, pids, live logs)
+out/cookies.txt
+out/*.pid
+out/web.log
+out/verify1*.log
+out/kill_ports.sh
+out/m1_thread.env

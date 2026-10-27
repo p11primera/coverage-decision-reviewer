@@ -40,6 +40,10 @@ app = FastAPI(title='Coverage Decision Reviewer', version='0.1.0', lifespan=life
 async def _agent_endpoint(request: Request) -> Any:
     run_input = AGUIAdapter.build_run_input(await request.body())
     thread_id = run_input.thread_id
+    # Reviewer identity is attached server-side by the BFF (Next route handler) from the
+    # verified session cookie, forwarded here as X-Reviewer-Id. Never trust a client-supplied
+    # value: the browser has no path to set this header that bypasses the BFF.
+    reviewer_id = request.headers.get('x-reviewer-id') or 'reviewer'
 
     history = await store.load(thread_id)
     before = len(history)
@@ -74,7 +78,7 @@ async def _agent_endpoint(request: Request) -> Any:
         approved = bool(isinstance(payload, dict) and payload.get('approved'))
         await store.append_audit(
             thread_id,
-            actor='reviewer',
+            actor=reviewer_id,
             action='decision_resolved',
             decision='approve' if approved else 'deny',
             rationale=(payload or {}).get('reason') if isinstance(payload, dict) else None,
