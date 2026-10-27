@@ -21,3 +21,14 @@ out/web.log
 out/verify1*.log
 out/kill_ports.sh
 out/m1_thread.env
+
+# runtime artifacts: logs, reports, probes (keep only *_STATUS.md + sse evidence)
+out/*.log
+out/playwright-report/
+out/playwright-results/
+out/probe_*.txt
+out/*.html
+out/*.png
+out/cookies*.txt
+out/orch_*
+out/audit_api_*.json

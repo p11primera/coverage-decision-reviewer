@@ -1,5 +1,8 @@
 # Coverage Decision Reviewer
 
+> **Unofficial proof of concept.** Not affiliated with or endorsed by Evolent Health.
+> All trademarks are the property of their respective owners. MIT licensed — see LICENSE.
+
 A prior-authorization PoC for a health-plan stack: a clinician submits a coverage request;
 a **Pydantic AI** agent streams a cited review narrative, calls coverage-rule + long
 claim-check tools (live progress), survives a deliberately flaky risk tool, and **pauses on
