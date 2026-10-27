@@ -7,7 +7,7 @@
 
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -150,6 +150,33 @@ export function ReviewStream({ reviewer }: { reviewer: string }) {
     ?.content as string | undefined;
   const running = agent.isRunning;
 
+  // M5 auto-anchor: follow the stream while the reviewer is at (or near) the bottom —
+  // within 40px counts as following — and stop following the moment they scroll up. When
+  // they are not following and new text arrives, a pill offers the jump back down.
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [following, setFollowing] = useState(true);
+  const lastNarrativeLength = useRef(0);
+  const narrativeLength = narrative?.length ?? 0;
+  useEffect(() => {
+    if (narrativeLength > lastNarrativeLength.current) {
+      const el = viewportRef.current;
+      if (el && following) el.scrollTop = el.scrollHeight;
+    }
+    lastNarrativeLength.current = narrativeLength;
+  }, [narrativeLength, following]);
+
+  function onViewportScroll() {
+    const el = viewportRef.current;
+    if (!el) return;
+    setFollowing(el.scrollHeight - el.scrollTop - el.clientHeight <= 40);
+  }
+
+  function scrollToLatest() {
+    const el = viewportRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+    setFollowing(true);
+  }
+
   // M3A retry semantics (honest documentation): Retry calls copilotkit.runAgent again on
   // the SAME agent instance and SAME threadId. That is a NEW agent run, not a byte-level
   // resume of the dead SSE: HttpAgent.runAgent
@@ -181,8 +208,16 @@ export function ReviewStream({ reviewer }: { reviewer: string }) {
       <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
         Review narrative {running ? <span className="animate-pulse">●</span> : null}
       </h2>
-      {narrative ? (
-        <div className="mt-3">
+      {/* M5 fixed-height narrative viewport: the stream scrolls inside a clamped box so
+          the decision rail beside it never jumps as tokens land (jsdom has no layout
+          engine — tests/ReviewStreamLayout.test.tsx pins the clamp classes themselves). */}
+      <div
+        ref={viewportRef}
+        onScroll={onViewportScroll}
+        data-testid="narrative-viewport"
+        className="mt-3 h-[45vh] min-h-[300px] max-h-[620px] overflow-y-auto pr-1"
+      >
+        {narrative ? (
           <Markdown
             remarkPlugins={[remarkGfm]}
             components={MD_COMPONENTS}
@@ -194,19 +229,35 @@ export function ReviewStream({ reviewer }: { reviewer: string }) {
           >
             {citeToLink(narrative)}
           </Markdown>
-        </div>
-      ) : (
-        <>
-          <p className="mt-3 text-sm text-slate-500">
-            {running ? "Streaming…" : "No narrative yet — submit a request to start the review."}
-          </p>
-          {!running && restoredThreadId !== null && agent.messages.length === 0 ? (
-            <p className="mt-2 text-xs italic text-slate-600">
-              Previous run for this thread is in the audit trail.
+        ) : running ? (
+          // M5: an in-flight run with no tokens yet shows skeleton lines, not "Streaming…".
+          <div className="space-y-2 py-1">
+            <div aria-hidden="true" className="h-3 w-3/4 animate-pulse rounded bg-slate-200" />
+            <div aria-hidden="true" className="h-3 w-full animate-pulse rounded bg-slate-200" />
+            <div aria-hidden="true" className="h-3 w-2/3 animate-pulse rounded bg-slate-200" />
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-slate-500">
+              No narrative yet — submit a request to start the review.
             </p>
-          ) : null}
-        </>
-      )}
+            {restoredThreadId !== null && agent.messages.length === 0 ? (
+              <p className="mt-2 text-xs italic text-slate-600">
+                Previous run for this thread is in the audit trail.
+              </p>
+            ) : null}
+          </>
+        )}
+      </div>
+      {!following && narrative ? (
+        <button
+          type="button"
+          onClick={scrollToLatest}
+          className="mt-2 inline-flex items-center rounded-full bg-navy px-3 py-1 text-xs font-semibold text-white shadow hover:bg-navy/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
+          ↓ New updates — jump to latest
+        </button>
+      ) : null}
       {streamError ? (
         <div
           role="alert"

@@ -1,5 +1,5 @@
-npm notice run web@0.1.0 npx
-npm notice run 'next' start -p 3001 -H 0.0.0.0
+npm notice run web@0.1.0 start
+npm notice run next start -p 3001 -H 0.0.0.0
    ▲ Next.js 15.5.28
    - Local:        http://localhost:3001
    - Network:      http://0.0.0.0:3001

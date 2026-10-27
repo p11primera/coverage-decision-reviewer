@@ -315,10 +315,18 @@ export function ApprovalCard() {
     },
   });
 
+  // M5 mobile bottom sheet: below lg, a pending interrupt pins the card to the viewport
+  // bottom (sheet semantics); at lg+ the wrapper is byte-identical to before (in the rail).
+  const interruptActive = agent.pendingInterrupts.length > 0;
+
   return (
     <section
       aria-label="Approval and tool activity"
-      className="rounded-lg border border-slate-300 bg-white p-4 shadow-sm"
+      className={`rounded-lg border border-slate-300 bg-white p-4 shadow-sm ${
+        interruptActive
+          ? "max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-40 max-lg:rounded-none max-lg:border-t-2 max-lg:border-amber-500 max-lg:shadow-2xl"
+          : ""
+      }`}
     >
       <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
         Tool activity

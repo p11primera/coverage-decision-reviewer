@@ -63,16 +63,22 @@ export default async function ReviewerPage() {
         {/* One CopilotKit provider for the whole island set: all islands share the same
             browser-side agent instance (same agentId) so the stream/state/progress/approval
             views — and the header status pill — stay coherent during a run. */}
-        <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <div className="space-y-4">
+        {/* M5: two-column grid — working column (request + narrative) beside a sticky
+            decision rail (progress / state / approval). Below lg it collapses to a single
+            column in stack order: form, narrative, progress, state, approval. */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="flex flex-col gap-4">
             <RequestForm reviewer={reviewer} />
             <ReviewStream reviewer={reviewer} />
-            <ApprovalCard />
           </div>
-          <div className="space-y-4">
+          <aside
+            aria-label="Decision rail"
+            className="flex flex-col gap-4 overflow-y-auto lg:sticky lg:top-6 lg:max-h-[calc(100vh-6rem)]"
+          >
             <ProgressBar />
             <StatePanel />
-          </div>
+            <ApprovalCard />
+          </aside>
         </div>
       </main>
     </ReviewerProvider>

@@ -36,6 +36,11 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // M5 collapse: after a submit succeeds we swap the expanded form for a compact summary
+  // strip of the LAST SUBMITTED values (plain state — no new storage layer). "New review"
+  // (and a successful cancel, which invites an immediate re-submit) expands a clean form.
+  const [submitted, setSubmitted] = useState(false);
+  const [lastSubmitted, setLastSubmitted] = useState<{ patientSummary: string; cpt: string } | null>(null);
   const [cancelState, setCancelState] = useState<"idle" | "pending" | "cancelled" | "not_found">("idle");
   const draftLoaded = useRef(false);
   // Set when a cancel was accepted: the agent gets a FRESH threadId immediately (so the
@@ -99,6 +104,8 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
     if (blocked) return; // guard (button is aria-disabled; Enter-in-field must not bypass)
     setError(null);
     setCancelState("idle");
+    setLastSubmitted({ patientSummary, cpt });
+    setSubmitted(true); // collapse to the summary strip while the run lives
     agent.addMessage({
       id: newId(), // LAN-IP (non-secure-context) safe: see lib/id.ts
       role: "user",
@@ -109,6 +116,7 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
       await copilotkit.runAgent({ agent });
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
+      setSubmitted(false); // surface the failure against the full form, not the strip
     } finally {
       setBusy(false);
       if (freshThreadPending.current) {
@@ -132,6 +140,7 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
       });
       if (res.ok) {
         setCancelState("cancelled");
+        setSubmitted(false); // re-expand: the "history saved" status + a clean next submit
         publishRunCancelled(); // freeze tool-activity chips + progress bar islands
         freshThreadPending.current = true;
         agent.threadId = newId(); // next submit = fresh run; backend history is per-thread
@@ -147,6 +156,69 @@ export function RequestForm({ reviewer }: { reviewer: string }) {
       setError(err instanceof Error ? err.message : String(err));
       setCancelState("idle");
     }
+  }
+
+  function newReview() {
+    setSubmitted(false);
+    setLastSubmitted(null);
+    setPatientSummary("");
+    setCpt("");
+    setNotes("");
+    setError(null);
+    setCancelState("idle");
+  }
+
+  // M5 collapsed summary strip (post-submit): one line — truncated patient summary + CPT —
+  // plus "New review" and, ONLY while a run is active, the SAME Cancel control (byte-identical
+  // accessible name + click path) the expanded form renders, so cancel.spec still lands.
+  if (submitted && lastSubmitted) {
+    const summary =
+      lastSubmitted.patientSummary.length > 60
+        ? `${lastSubmitted.patientSummary.slice(0, 60).trimEnd()}…`
+        : lastSubmitted.patientSummary;
+    return (
+      <div
+        aria-label="Submitted request summary"
+        className="rounded-lg border border-slate-300 bg-white p-4 shadow-sm"
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="min-w-0 flex-1 truncate text-sm text-slate-900">
+            <span className="font-medium">{summary}</span>{" "}
+            <span className="font-mono text-xs text-slate-600">CPT {lastSubmitted.cpt}</span>
+          </p>
+          <button
+            type="button"
+            onClick={newReview}
+            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+          >
+            New review
+          </button>
+          {running ? (
+            // M3A Cancel: only reachable while a run is live. Real <button> (keyboard +
+            // focus ring), AA contrast (white on red-800), announces via cancelState below.
+            <button
+              type="button"
+              onClick={onCancel}
+              disabled={cancelState === "pending"}
+              data-testid="cancel-button"
+              className="rounded bg-red-800 px-4 py-2 text-sm font-semibold text-white hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+            >
+              {cancelState === "pending" ? "Cancelling…" : "Cancel run"}
+            </button>
+          ) : null}
+        </div>
+        {cancelState === "not_found" ? (
+          <p role="status" className="mt-3 rounded border border-amber-300 bg-amber-50 p-2 text-sm font-medium text-amber-900">
+            No active run to cancel.
+          </p>
+        ) : null}
+        {error ? (
+          <p role="alert" className="mt-3 rounded border border-red-300 bg-red-50 p-2 text-sm text-red-900">
+            {error}
+          </p>
+        ) : null}
+      </div>
+    );
   }
 
   return (
