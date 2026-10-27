@@ -8,3 +8,8 @@ __pycache__/
 .env
 node_modules/
 .next/
+web/node_modules/
+web/.next/
+web/out/
+out/server.log
+out/run_*.log
