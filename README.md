@@ -16,6 +16,12 @@ Stack: FastAPI + `pydantic-ai-slim[ag-ui]` (:8100) behind a **Next.js 15 App Rou
 endpoint, SQLite for history/audit, portable containers only (AKS-shaped, zero
 Vercel-specific features).
 
+**[▶ Live demo](https://reviewer.skyfish.cloud)** — dev sign-in accepts any name; the form
+is pre-filled with a cauda-equina MRI case. Watch the stream, approve the decision, and open
+the audit drawer.
+
+![Golden path: submit, cited narrative, HITL interrupt, approve, audit trail](demo/demo.gif)
+
 ## Architecture
 
 ```
